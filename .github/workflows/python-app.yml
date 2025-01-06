@@ -38,15 +38,10 @@ jobs:
     
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
         python -m pip install --upgrade pip
         pip install wheel setuptools
-        pip install rdflib==7.1.1 PyLD==2.0.3 jsonschema==4.23.0
-        pip install case_utils==0.16.0
         pip install -r requirements.txt
         pip list
-        python -c "import case_utils; print('case_utils version:', case_utils.__version__); from case_utils.case_validate import validate; print('Validation module loaded successfully')"
     
     - name: Check formatting with black
       run: |
@@ -58,13 +53,9 @@ jobs:
         mypy --version
         mypy --ignore-missing-imports --no-strict-optional .
     
-    - name: Create output directory and prepare for validation
+    - name: Create output directory
       run: |
         mkdir -p output
-        ls -la data/
-        echo "Input file contents:"
-        cat data/NSRL-CAID-ART.json || echo "File not found in data/"
-        find . -name "NSRL-CAID-ART.json" || echo "File not found in repository"
     
     - name: Run NSRL to UCO conversion
       run: |
@@ -74,16 +65,16 @@ jobs:
         ls -la output/
         echo "Output directory contents:"
         ls -la ${{ github.workspace }}/output/
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
     
     - name: CASE Export Validation
-      if: always()
       uses: kchason/case-validation-action@v2.9.0
-      env:
-        CASE_PATH: ${{ github.workspace }}/output
-        CASE_VERSION: case-1.3.0
-        CASE_EXTENSION_FILTER: json
-        REPORT_IN_PR: true
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-        GITHUB_PULL_REQUEST: ${{ github.event.pull_request.number }}
-        CASE_VALIDATE_ABORT: false 
+      with:
+        case-path: "./output/"
+        case-version: "case-1.3.0"
+        extension-filter: "json" 
