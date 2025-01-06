@@ -78,9 +78,9 @@ jobs:
       uses: kchason/case-validation-action@v2.9.0
       with:
         case-path: ./output/
-        case-version: "case-1.3.0"
-        extension-filter: "json"
-        report-in-pr: "true"
+        case-version: case-1.3.0
+        extension-filter: json
+        report-in-pr: true
         github-token: ${{ secrets.GITHUB_TOKEN }}
         repository: ${{ github.repository }}
         pull-request: ${{ github.event.pull_request.number }} 
