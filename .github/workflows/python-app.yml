@@ -31,7 +31,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     
@@ -41,8 +41,8 @@ jobs:
         sudo apt-get install -y jq
         python -m pip install --upgrade pip
         pip install wheel setuptools
-        pip install rdflib>=7.0.0 PyLD>=2.0.3 jsonschema>=4.20.0
-        pip install git+https://github.com/casework/CASE-Utilities-Python.git@main
+        pip install rdflib==7.0.0 PyLD==2.0.3 jsonschema==4.20.0
+        pip install case_utils==0.16.0
         pip install -r requirements.txt
         pip list
         python -c "import case_utils; print('case_utils version:', case_utils.__version__); from case_utils.case_validate import validate; print('Validation module loaded successfully')"
