@@ -14,18 +14,30 @@ UCO Version: 1.3.0
 Ontology Compliance: UCO Core, Observable, and Types
 """
 
+# Debug statements to help diagnose import issues
+import sys
+print("Python version:", sys.version)
+print("Python executable:", sys.executable)
+print("Python path:", sys.path)
+
+try:
+    import json
+    print("Successfully imported json module")
+except ImportError as e:
+    print("Failed to import json module:", str(e))
+    print("Attempting to find json module in:", [p for p in sys.path if 'json' in str(p).lower()])
+    sys.exit(1)
+
 import argparse
 import datetime
 from datetime import UTC
 import hashlib
-import json
 import logging
 import logging.handlers
 import os
-import sys
+from pathlib import Path
 import uuid
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Dict, List, Optional, Set, Union, TypedDict
 
 # Type definitions for improved clarity

@@ -32,16 +32,25 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
       
-      - name: List Python environment
+      - name: Debug Python environment
         run: |
+          which python3
           which python
+          python3 --version
           python --version
-          pip --version
-          python -c "import sys; print(sys.path)"
+          echo "PYTHONPATH=$PYTHONPATH"
+          echo "Python sys.path:"
+          python3 -c "import sys; print('\n'.join(sys.path))"
+          echo "Python executable location:"
+          python3 -c "import sys; print(sys.executable)"
+          echo "Python prefix:"
+          python3 -c "import sys; print(sys.prefix)"
+          echo "Looking for json module:"
+          python3 -c "import importlib.util; print('json module location:', importlib.util.find_spec('json'))"
       
       - name: Run conversion
         run: |
-          python nsrl_to_uco.py data/NSRL-CAID-ART.json
+          python3 nsrl_to_uco.py data/NSRL-CAID-ART.json
       
       - name: List output directory
         run: |
