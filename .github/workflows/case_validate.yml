@@ -1,0 +1,26 @@
+name: CASE Validate
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+# Ensure all of the files in /data/ are valid CASE graphs.
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Get the code from the repository to be packaged
+      - name: Get Repo
+        uses: actions/checkout@v3
+
+      # Validate the CASE graphs in the /data/ directory
+      - name: CASE Validate
+        uses: kchason/case-validation-action@v2.9.0
+        with:
+          case-path: "./output/uco-NSRL-CAID-ART.json"
+          case-version: "case-1.3.0"
+          extension-filter: "json"
