@@ -43,10 +43,6 @@ htmlcov/
 *.log
 *.sqlite
 
-# Output files
-output/
-!output/.gitkeep
-
 # Local development
 .DS_Store
 Thumbs.db

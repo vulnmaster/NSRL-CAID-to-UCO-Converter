@@ -1,0 +1,167 @@
+{
+  "@context": {
+    "uco-core": "https://ontology.unifiedcyberontology.org/uco/core/",
+    "uco-observable": "https://ontology.unifiedcyberontology.org/uco/observable/",
+    "uco-types": "https://ontology.unifiedcyberontology.org/uco/types/",
+    "uco-tool": "https://ontology.unifiedcyberontology.org/uco/tool/",
+    "uco-identity": "https://ontology.unifiedcyberontology.org/uco/identity/",
+    "uco-vocabulary": "https://ontology.unifiedcyberontology.org/uco/vocabulary/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "kb": "http://example.org/kb/"
+  },
+  "@graph": [
+    {
+      "@id": "kb:bundle-2570f9d5-bfbe-4f40-b482-53c0f71cd40f",
+      "@type": "uco-core:Bundle",
+      "uco-core:description": "NSRL CAID media file reference data",
+      "uco-core:object": [
+        {
+          "@id": "kb:tool-736175f4",
+          "@type": "uco-tool:ConfiguredTool",
+          "uco-core:name": "nsrl_to_uco.py",
+          "uco-core:description": "Converts NSRL CAID JSON to UCO format",
+          "uco-tool:creator": {
+            "@id": "kb:org-linux-foundation",
+            "@type": "uco-identity:Organization",
+            "uco-core:name": "Linux Foundation Cyber Domain Ontology Project"
+          },
+          "uco-core:objectCreatedTime": "2025-01-06T18:29:05.939180Z",
+          "uco-core:startTime": "2025-01-06T18:29:05.939180Z",
+          "uco-core:endTime": "2025-01-06T18:29:05.939180Z",
+          "uco-core:specVersion": "1.3.0"
+        },
+        {
+          "@id": "kb:org-nist",
+          "@type": "uco-identity:Organization",
+          "uco-core:name": "National Institute of Standards and Technology"
+        },
+        {
+          "@id": "kb:source-nsrl-caid",
+          "@type": "uco-observable:URL",
+          "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
+        },
+        {
+          "@id": "kb:relationship-655de72e-d48d-4e49-a1be-9efe668e709f",
+          "@type": "uco-observable:ObservableRelationship",
+          "uco-core:source": "kb:bundle-2570f9d5-bfbe-4f40-b482-53c0f71cd40f",
+          "uco-core:target": "kb:tool-736175f4",
+          "uco-core:kindOfRelationship": "createdBy",
+          "uco-core:isDirectional": true,
+          "uco-core:objectCreatedTime": "2025-01-06T18:29:05.939197Z",
+          "uco-core:specVersion": "1.3.0"
+        },
+        {
+          "@id": "kb:relationship-7ce70e4d-c011-412f-b5b5-dfd9a294ee37",
+          "@type": "uco-observable:ObservableRelationship",
+          "uco-core:source": "kb:source-nsrl-caid",
+          "uco-core:target": "kb:org-nist",
+          "uco-core:kindOfRelationship": "managedBy",
+          "uco-core:isDirectional": true,
+          "uco-core:objectCreatedTime": "2025-01-06T18:29:05.939197Z",
+          "uco-core:specVersion": "1.3.0"
+        },
+        {
+          "@id": "kb:input-519f062c-b245-4521-bba9-d62eb8e07409",
+          "@type": "uco-observable:File",
+          "uco-core:name": "NSRL-CAID-ART.json",
+          "uco-core:objectCreatedTime": "2025-01-06T18:29:05.938878Z",
+          "uco-core:specVersion": "1.3.0",
+          "uco-core:hasFacet": [
+            {
+              "@id": "kb:file-facet-4b1612e3-64eb-4779-8a90-fc340fe13306",
+              "@type": "uco-observable:FileFacet",
+              "uco-observable:fileName": "NSRL-CAID-ART.json",
+              "uco-observable:extension": "json",
+              "uco-observable:isDirectory": false,
+              "uco-observable:observableCreatedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2025-01-06T18:29:05.938878Z"
+              },
+              "uco-observable:modifiedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2025-01-06T18:29:05.938878Z"
+              },
+              "uco-observable:accessedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2025-01-06T18:29:05.938878Z"
+              }
+            }
+          ]
+        },
+        {
+          "@id": "kb:relationship-5012feb6-6855-438a-920b-2e9dcbaf1080",
+          "@type": "uco-observable:ObservableRelationship",
+          "uco-core:source": "kb:input-519f062c-b245-4521-bba9-d62eb8e07409",
+          "uco-core:target": "kb:source-nsrl-caid",
+          "uco-core:kindOfRelationship": "derivedFrom",
+          "uco-core:isDirectional": true,
+          "uco-core:specVersion": "1.3.0",
+          "uco-core:objectCreatedTime": "2025-01-06T18:29:05.938878Z"
+        },
+        {
+          "@id": "kb:media-41a85639-377f-484d-966e-36d29c6cac97",
+          "@type": "uco-observable:File",
+          "uco-observable:categories": 8,
+          "uco-core:specVersion": "1.3.0",
+          "uco-core:objectCreatedTime": "2025-01-06T18:29:05.938878Z",
+          "uco-core:hasFacet": [
+            {
+              "@id": "kb:file-facet-17425b23-1259-4929-ac8d-f2088374642f",
+              "@type": "uco-observable:FileFacet",
+              "uco-observable:fileName": "build2.art",
+              "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
+              "uco-observable:extension": "art",
+              "uco-observable:isDirectory": false,
+              "uco-observable:hash": [
+                {
+                  "@type": "uco-types:Hash",
+                  "uco-types:hashMethod": {
+                    "@type": "uco-vocabulary:HashNameVocab",
+                    "@value": "MD5"
+                  },
+                  "uco-types:hashValue": {
+                    "@type": "xsd:hexBinary",
+                    "@value": "588cd1c0e48916d8e7403310402d0a68"
+                  }
+                },
+                {
+                  "@type": "uco-types:Hash",
+                  "uco-types:hashMethod": {
+                    "@type": "uco-vocabulary:HashNameVocab",
+                    "@value": "SHA1"
+                  },
+                  "uco-types:hashValue": {
+                    "@type": "xsd:hexBinary",
+                    "@value": "e65706b487c73e992bab2a50707a9fd8b0bd6866"
+                  }
+                }
+              ],
+              "uco-observable:observableCreatedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2025-01-06T18:29:05.939262Z"
+              },
+              "uco-observable:modifiedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2025-01-06T18:29:05.939262Z"
+              },
+              "uco-observable:accessedTime": {
+                "@type": "xsd:dateTime",
+                "@value": "2025-01-06T18:29:05.939262Z"
+              },
+              "uco-observable:sizeInBytes": 488
+            },
+            {
+              "@id": "kb:content-data-facet-ee4f4775-7d8e-4b10-b19e-370d06bb97a5",
+              "@type": "uco-observable:ContentDataFacet",
+              "uco-observable:byteOrder": {
+                "@type": "uco-vocabulary:EndiannessTypeVocab",
+                "@value": "Big-endian"
+              },
+              "uco-observable:sizeInBytes": 488
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

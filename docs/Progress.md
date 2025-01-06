@@ -48,7 +48,7 @@
 
 2. Testing Framework
    - Unit tests
-   - Integration tests
+   - Integration tests (if needed)
    - Validation tests
    - Performance benchmarks
 
