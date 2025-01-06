@@ -29,6 +29,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -47,15 +48,6 @@ jobs:
         pip list
         python -c "import case_utils; print('case_utils version:', case_utils.__version__); from case_utils.case_validate import validate; print('Validation module loaded successfully')"
     
-    - name: Create output directory
-      run: |
-        mkdir -p output
-        ls -la data/
-        echo "Input file contents:"
-        cat data/NSRL-CAID-ART.json
-        echo -e "\nChecking JSON validity:"
-        python -c "import json; print(json.dumps(json.load(open('data/NSRL-CAID-ART.json')), indent=2))"
-    
     - name: Check formatting with black
       run: |
         black --version
@@ -66,11 +58,19 @@ jobs:
         mypy --version
         mypy --ignore-missing-imports --no-strict-optional .
     
+    - name: Create output directory
+      run: |
+        mkdir -p output
+        ls -la data/
+        echo "Input file contents:"
+        cat data/NSRL-CAID-ART.json || echo "File not found in data/"
+        find . -name "NSRL-CAID-ART.json" || echo "File not found in repository"
+    
     - name: Run NSRL to UCO conversion
       run: |
         python --version
         echo "Converting NSRL-CAID-ART.json..."
-        python -X dev nsrl_to_uco.py data/NSRL-CAID-ART.json --debug
+        python -X dev nsrl_to_uco.py data/ --combine --debug
     
     - name: Validate UCO output
       if: always()
@@ -80,11 +80,12 @@ jobs:
         if [ -f output/uco-NSRL-CAID-ART.json ]; then
           echo "Output file exists and has size:"
           stat output/uco-NSRL-CAID-ART.json
-          echo "Output file contents:"
+          echo "Checking JSON validity..."
           python -c "import json; print(json.dumps(json.load(open('output/uco-NSRL-CAID-ART.json')), indent=2))"
           echo "Validating with case_utils..."
-          python -c "import sys; import case_utils; from case_utils.case_validate import validate; print('Python version:', sys.version); print('case_utils version:', case_utils.__version__); print('Python path:', sys.path); print('Installed packages:', sorted(list(__import__('pkg_resources').working_set.by_key.keys()))); print('Validating against CASE 1.3.0...'); try: validate('output/uco-NSRL-CAID-ART.json', case_version='case-1.3.0', ontology_version='1.3.0', debug=True); print('Validation successful'); except Exception as e: print('Validation error:', str(e)); raise"
+          python validate_uco.py output/uco-NSRL-CAID-ART.json
         else
           echo "Output file not found!"
+          find . -type f -name "*.json" | while read file; do echo "$file:"; head -n1 "$file"; done
           exit 1
         fi 
