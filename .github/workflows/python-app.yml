@@ -58,7 +58,7 @@ jobs:
         mypy --version
         mypy --ignore-missing-imports --no-strict-optional .
     
-    - name: Create output directory
+    - name: Create output directory and prepare for validation
       run: |
         mkdir -p output
         ls -la data/
@@ -72,12 +72,14 @@ jobs:
         echo "Converting NSRL-CAID-ART.json..."
         python -X dev nsrl_to_uco.py data/ --combine --debug
         ls -la output/
+        echo "Output directory contents:"
+        ls -la ${{ github.workspace }}/output/
     
     - name: CASE Export Validation
       if: always()
       uses: kchason/case-validation-action@v2.9.0
       with:
-        case-path: ./output/
+        case-path: ${{ github.workspace }}/output
         case-version: case-1.3.0
         extension-filter: json
         report-in-pr: true
