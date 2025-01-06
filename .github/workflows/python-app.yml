@@ -71,21 +71,16 @@ jobs:
         python --version
         echo "Converting NSRL-CAID-ART.json..."
         python -X dev nsrl_to_uco.py data/ --combine --debug
-    
-    - name: Validate UCO output
-      if: always()
-      run: |
-        echo "Validating output file..."
         ls -la output/
-        if [ -f output/uco-NSRL-CAID-ART.json ]; then
-          echo "Output file exists and has size:"
-          stat output/uco-NSRL-CAID-ART.json
-          echo "Checking JSON validity..."
-          python -c "import json; print(json.dumps(json.load(open('output/uco-NSRL-CAID-ART.json')), indent=2))"
-          echo "Validating with case_utils..."
-          python validate_uco.py output/uco-NSRL-CAID-ART.json
-        else
-          echo "Output file not found!"
-          find . -type f -name "*.json" | while read file; do echo "$file:"; head -n1 "$file"; done
-          exit 1
-        fi 
+    
+    - name: CASE Export Validation
+      if: always()
+      uses: kchason/case-validation-action@v2.9.0
+      with:
+        case-path: ./output/
+        case-version: "case-1.3.0"
+        extension-filter: "json"
+        report-in-pr: "true"
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        repository: ${{ github.repository }}
+        pull-request: ${{ github.event.pull_request.number }} 
