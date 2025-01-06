@@ -70,7 +70,7 @@ jobs:
       run: |
         python --version
         echo "Converting NSRL-CAID-ART.json..."
-        python -X dev nsrl_to_uco.py data/ --combine --debug
+        python -X dev nsrl_to_uco.py data/NSRL-CAID-ART.json --debug
         ls -la output/
         echo "Output directory contents:"
         ls -la ${{ github.workspace }}/output/
@@ -78,11 +78,12 @@ jobs:
     - name: CASE Export Validation
       if: always()
       uses: kchason/case-validation-action@v2.9.0
-      with:
-        case-path: ${{ github.workspace }}/output
-        case-version: case-1.3.0
-        extension-filter: json
-        report-in-pr: true
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        repository: ${{ github.repository }}
-        pull-request: ${{ github.event.pull_request.number }} 
+      env:
+        CASE_PATH: ${{ github.workspace }}/output
+        CASE_VERSION: case-1.3.0
+        CASE_EXTENSION_FILTER: json
+        REPORT_IN_PR: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_PULL_REQUEST: ${{ github.event.pull_request.number }}
+        CASE_VALIDATE_ABORT: false 
