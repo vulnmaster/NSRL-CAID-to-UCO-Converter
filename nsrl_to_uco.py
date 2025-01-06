@@ -387,11 +387,19 @@ class NSRLConverter:
                 file_obj = {
                     "@id": f"kb:media-{uuid.uuid4()}",
                     "@type": "uco-observable:File",
-                    "uco-observable:categories": media.get("Category"),
                     "uco-core:specVersion": "1.3.0",
                     "uco-core:objectCreatedTime": current_time,
                     "uco-core:hasFacet": []
                 }
+                
+                # Add categories if present
+                if "Category" in media:
+                    file_obj["uco-observable:categories"] = [
+                        {
+                            "@type": "uco-vocabulary:ObservableObjectCategoryVocab",
+                            "@value": str(media["Category"])
+                        }
+                    ]
                 
                 # Add file facets from MediaFiles
                 for media_file in media.get("MediaFiles", []):

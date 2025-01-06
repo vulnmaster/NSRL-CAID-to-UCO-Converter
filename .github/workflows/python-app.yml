@@ -37,6 +37,8 @@ jobs:
     
     - name: Install dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip list
@@ -45,10 +47,10 @@ jobs:
       run: |
         mkdir -p output
         ls -la data/
-        echo "Input file contents (first 1000 bytes):"
-        head -c 1000 data/NSRL-CAID-ART.json | cat -A
+        echo "Input file contents:"
+        cat data/NSRL-CAID-ART.json
         echo -e "\nChecking JSON validity:"
-        python -c "import json; json.load(open('data/NSRL-CAID-ART.json'))" || echo "Invalid JSON detected"
+        python -c "import json; print(json.dumps(json.load(open('data/NSRL-CAID-ART.json')), indent=2))"
     
     - name: Check formatting with black
       run: |
@@ -74,8 +76,8 @@ jobs:
         if [ -f output/uco-NSRL-CAID-ART.json ]; then
           echo "Output file exists and has size:"
           stat output/uco-NSRL-CAID-ART.json
-          echo "First 1000 bytes of output:"
-          head -c 1000 output/uco-NSRL-CAID-ART.json | jq '.'
+          echo "Output file contents:"
+          python -c "import json; print(json.dumps(json.load(open('output/uco-NSRL-CAID-ART.json')), indent=2))"
           echo "Validating with case_utils..."
           python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json', debug=True)"
         else
