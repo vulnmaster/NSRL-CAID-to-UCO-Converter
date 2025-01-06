@@ -305,10 +305,25 @@ class NSRLConverter:
             self.logger.info(f"Processing {input_file}")
             current_time = datetime.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
             
-            with open(input_file) as f:
-                data = json.load(f)
+            self.logger.debug(f"Reading input file: {input_file}")
+            try:
+                with open(input_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    self.logger.debug(f"File content length: {len(content)} bytes")
+                    try:
+                        data = json.loads(content)
+                        self.logger.debug("Successfully parsed JSON content")
+                    except json.JSONDecodeError as je:
+                        self.logger.error(f"JSON decode error at line {je.lineno}, column {je.colno}: {je.msg}")
+                        self.logger.error(f"Error context: {content[max(0, je.pos-50):je.pos+50]}")
+                        raise
+            except Exception as e:
+                self.logger.error(f"Error reading file: {str(e)}")
+                raise
                 
             if "value" not in data:
+                self.logger.error("Invalid NSRL CAID JSON format: missing 'value' key")
+                self.logger.debug(f"Available keys: {list(data.keys())}")
                 raise ValueError("Invalid NSRL CAID JSON format: missing 'value' key")
                 
             self.logger.debug(f"Found {len(data['value'])} media objects")

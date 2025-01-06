@@ -45,8 +45,10 @@ jobs:
       run: |
         mkdir -p output
         ls -la data/
-        echo "Input file contents:"
-        cat data/NSRL-CAID-ART.json
+        echo "Input file contents (first 1000 bytes):"
+        head -c 1000 data/NSRL-CAID-ART.json | cat -A
+        echo -e "\nChecking JSON validity:"
+        python -c "import json; json.load(open('data/NSRL-CAID-ART.json'))" || echo "Invalid JSON detected"
     
     - name: Check formatting with black
       run: |
