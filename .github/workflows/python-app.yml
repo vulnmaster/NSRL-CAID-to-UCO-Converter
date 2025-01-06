@@ -72,8 +72,11 @@ jobs:
         echo "Validating output file..."
         ls -la output/
         if [ -f output/uco-NSRL-CAID-ART.json ]; then
-          echo "Output file contents:"
-          cat output/uco-NSRL-CAID-ART.json
+          echo "Output file exists and has size:"
+          stat output/uco-NSRL-CAID-ART.json
+          echo "First 1000 bytes of output:"
+          head -c 1000 output/uco-NSRL-CAID-ART.json | jq '.'
+          echo "Validating with case_utils..."
           python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json', debug=True)"
         else
           echo "Output file not found!"

@@ -321,12 +321,18 @@ class NSRLConverter:
                 self.logger.error(f"Error reading file: {str(e)}")
                 raise
                 
-            if "value" not in data:
-                self.logger.error("Invalid NSRL CAID JSON format: missing 'value' key")
-                self.logger.debug(f"Available keys: {list(data.keys())}")
-                raise ValueError("Invalid NSRL CAID JSON format: missing 'value' key")
+            # Handle both direct value array and odata.metadata format
+            if isinstance(data, dict):
+                if "value" not in data:
+                    self.logger.error("Invalid NSRL CAID JSON format: missing 'value' key")
+                    self.logger.debug(f"Available keys: {list(data.keys())}")
+                    raise ValueError("Invalid NSRL CAID JSON format: missing 'value' key")
+                media_list = data["value"]
+            else:
+                self.logger.error("Invalid NSRL CAID JSON format: root must be an object")
+                raise ValueError("Invalid NSRL CAID JSON format: root must be an object")
                 
-            self.logger.debug(f"Found {len(data['value'])} media objects")
+            self.logger.debug(f"Found {len(media_list)} media objects")
             
             bundle = self._create_bundle()
             input_id = f"kb:input-{uuid.uuid4()}"
@@ -375,7 +381,7 @@ class NSRLConverter:
             bundle["uco-core:object"].extend([input_file_obj, input_relationship])
             
             # Process each media object
-            for media in data["value"]:
+            for media in media_list:
                 self.logger.debug(f"Processing media object with ID: {media.get('MediaID')}")
                 
                 file_obj = {
