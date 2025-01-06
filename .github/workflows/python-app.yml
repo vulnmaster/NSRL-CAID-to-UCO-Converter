@@ -40,9 +40,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
         python -m pip install --upgrade pip
-        pip install git+https://github.com/casework/CASE-Utilities-Python.git@main
+        pip install wheel setuptools
         pip install -r requirements.txt
+        pip install --no-deps git+https://github.com/casework/CASE-Utilities-Python.git@main
+        pip install rdflib>=6.0.0 PyLD>=2.0.0 jsonschema>=4.0.0
         pip list
+        python -c "import case_utils; print('case_utils version:', case_utils.__version__)"
     
     - name: Create output directory
       run: |
@@ -80,7 +83,7 @@ jobs:
           echo "Output file contents:"
           python -c "import json; print(json.dumps(json.load(open('output/uco-NSRL-CAID-ART.json')), indent=2))"
           echo "Validating with case_utils..."
-          python -c "import sys; from case_utils.case_validate import validate; print('Python path:', sys.path); print('Installed packages:'); __import__('pkg_resources').working_set.by_key.keys(); validate('output/uco-NSRL-CAID-ART.json', debug=True)"
+          python -c "import sys; from case_utils.case_validate import validate; print('Python path:', sys.path); print('Installed packages:'); print(list(__import__('pkg_resources').working_set.by_key.keys())); print('Validating against CASE 1.3.0...'); validate('output/uco-NSRL-CAID-ART.json', case_version='case-1.3.0', debug=True)"
         else
           echo "Output file not found!"
           exit 1
