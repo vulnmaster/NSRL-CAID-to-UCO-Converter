@@ -40,6 +40,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y jq
         python -m pip install --upgrade pip
+        pip install git+https://github.com/casework/CASE-Utilities-Python.git@main
         pip install -r requirements.txt
         pip list
     
@@ -79,7 +80,7 @@ jobs:
           echo "Output file contents:"
           python -c "import json; print(json.dumps(json.load(open('output/uco-NSRL-CAID-ART.json')), indent=2))"
           echo "Validating with case_utils..."
-          python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json', debug=True)"
+          python -c "import sys; from case_utils.case_validate import validate; print('Python path:', sys.path); print('Installed packages:'); __import__('pkg_resources').working_set.by_key.keys(); validate('output/uco-NSRL-CAID-ART.json', debug=True)"
         else
           echo "Output file not found!"
           exit 1
