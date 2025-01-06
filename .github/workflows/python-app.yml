@@ -60,7 +60,12 @@ jobs:
     - name: Run NSRL to UCO conversion
       run: |
         python --version
+        echo "Current directory contents:"
+        ls -la
+        echo "Data directory contents:"
+        ls -la data/
         echo "Converting NSRL-CAID-ART.json..."
+        python -c "from pathlib import Path; input_file = Path('data/NSRL-CAID-ART.json'); assert input_file.exists(), f'Input file {input_file} does not exist'"
         python -X dev nsrl_to_uco.py data/NSRL-CAID-ART.json --debug
         ls -la output/
         echo "Output directory contents:"
