@@ -84,9 +84,14 @@ class NSRLConverter:
     def _setup_logging(self) -> None:
         """Configure logging with file and console handlers."""
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)  # Always set to DEBUG for class logger
+        
+        # Remove any existing handlers
+        self.logger.handlers = []
         
         # Console handler
         console = logging.StreamHandler()
+        console.setLevel(logging.DEBUG)  # Set console handler to DEBUG
         console.setFormatter(logging.Formatter(
             '%(asctime)s - %(levelname)s - %(message)s'
         ))
@@ -99,10 +104,13 @@ class NSRLConverter:
                 maxBytes=10485760,  # 10MB
                 backupCount=5
             )
+            file_handler.setLevel(logging.DEBUG)  # Set file handler to DEBUG
             file_handler.setFormatter(logging.Formatter(
                 '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
             ))
             self.logger.addHandler(file_handler)
+            
+        self.logger.debug("Logging initialized at DEBUG level")
 
     def _generate_tool_id(self) -> str:
         """Generate deterministic tool ID based on script contents."""
@@ -472,10 +480,23 @@ def main() -> None:
     
     args = parser.parse_args()
     
-    logging.basicConfig(
-        level=logging.DEBUG if args.debug else logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
+    # Configure root logger first
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
+    
+    # Remove any existing handlers
+    root_logger.handlers = []
+    
+    # Add console handler to root logger
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG if args.debug else logging.INFO)
+    console_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s'
+    ))
+    root_logger.addHandler(console_handler)
+    
+    if args.debug:
+        root_logger.debug("Debug logging enabled")
     
     converter = NSRLConverter(
         args.input,

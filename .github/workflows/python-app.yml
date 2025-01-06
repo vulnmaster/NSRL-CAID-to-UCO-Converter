@@ -45,6 +45,8 @@ jobs:
       run: |
         mkdir -p output
         ls -la data/
+        echo "Input file contents:"
+        cat data/NSRL-CAID-ART.json
     
     - name: Check formatting with black
       run: |
@@ -60,10 +62,18 @@ jobs:
       run: |
         python --version
         echo "Converting NSRL-CAID-ART.json..."
-        python nsrl_to_uco.py data/NSRL-CAID-ART.json --debug
+        python -X dev nsrl_to_uco.py data/NSRL-CAID-ART.json --debug
     
     - name: Validate UCO output
+      if: always()
       run: |
         echo "Validating output file..."
         ls -la output/
-        python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json', debug=True)" 
+        if [ -f output/uco-NSRL-CAID-ART.json ]; then
+          echo "Output file contents:"
+          cat output/uco-NSRL-CAID-ART.json
+          python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json', debug=True)"
+        else
+          echo "Output file not found!"
+          exit 1
+        fi 
