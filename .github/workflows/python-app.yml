@@ -14,6 +14,10 @@ permissions:
   packages: write
   id-token: write
 
+env:
+  PYTHONPATH: ${{ github.workspace }}
+  PYTHONUNBUFFERED: 1
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,23 +39,31 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip list
     
     - name: Create output directory
       run: |
         mkdir -p output
+        ls -la data/
     
     - name: Check formatting with black
       run: |
+        black --version
         black --check --diff .
     
     - name: Type checking with mypy
       run: |
+        mypy --version
         mypy --ignore-missing-imports --no-strict-optional .
     
     - name: Run NSRL to UCO conversion
       run: |
-        python nsrl_to_uco.py data/NSRL-CAID-ART.json
+        python --version
+        echo "Converting NSRL-CAID-ART.json..."
+        python nsrl_to_uco.py data/NSRL-CAID-ART.json --debug
     
     - name: Validate UCO output
       run: |
-        python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json')" 
+        echo "Validating output file..."
+        ls -la output/
+        python -c "from case_utils.case_validate import validate; validate('output/uco-NSRL-CAID-ART.json', debug=True)" 

@@ -473,7 +473,8 @@ def main() -> None:
     args = parser.parse_args()
     
     logging.basicConfig(
-        level=logging.DEBUG if args.debug else logging.INFO
+        level=logging.DEBUG if args.debug else logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
     )
     
     converter = NSRLConverter(
