@@ -1,0 +1,11 @@
+{
+  "odata.metadata":"http://github.com/ICMEC/ProjectVic/DataModels/1.2.xml#Media","value":[
+    {
+      "odata.id":"Media(\"588cd1c0e48916d8e7403310402d0a68\")","MediaFiles@odata.navigationLinkUrl":"/Media(588cd1c0e48916d8e7403310402d0a68)/MediaFiles","MediaFiles":[
+      {
+        "Media@odata.navigationLinkUrl":"/MediaFiles(FileName='build2.art',FilePath='Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan',MD5=588cd1c0e48916d8e7403310402d0a68)","MD5":"588cd1c0e48916d8e7403310402d0a68","FileName":"build2.art","FilePath":"Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan"
+      }
+      ],"MediaID":0,"MD5":"588cd1c0e48916d8e7403310402d0a68","SHA1":"e65706b487c73e992bab2a50707a9fd8b0bd6866","Category":8,"MediaSize":"488"
+    }
+  ]
+}

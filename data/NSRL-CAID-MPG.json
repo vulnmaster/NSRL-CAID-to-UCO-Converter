@@ -1,0 +1,25 @@
+{
+  "odata.metadata":"http://github.com/ICMEC/ProjectVic/DataModels/1.2.xml#Media","value":[
+    {
+      "odata.id":"Media(\"0cef8332881a74ac9ae0e6f4c4323569\")","MediaFiles@odata.navigationLinkUrl":"/Media(0cef8332881a74ac9ae0e6f4c4323569)/MediaFiles","MediaFiles":[
+      {
+        "Media@odata.navigationLinkUrl":"/MediaFiles(FileName='eggBreak.mpg',FilePath='game/video',MD5=0cef8332881a74ac9ae0e6f4c4323569)","MD5":"0cef8332881a74ac9ae0e6f4c4323569","FileName":"eggBreak.mpg","FilePath":"game/video"
+      }
+      ],"MediaID":0,"MD5":"0cef8332881a74ac9ae0e6f4c4323569","SHA1":"2ec7cd699f82e0435b15b9ebf0999805155f8f90","Category":8,"MediaSize":"38733828"
+    },
+    {
+      "odata.id":"Media(\"c44b7688a7d948229a58c2684db19de2\")","MediaFiles@odata.navigationLinkUrl":"/Media(c44b7688a7d948229a58c2684db19de2)/MediaFiles","MediaFiles":[
+      {
+        "Media@odata.navigationLinkUrl":"/MediaFiles(FileName='motherScan.mpg',FilePath='game/video',MD5=c44b7688a7d948229a58c2684db19de2)","MD5":"c44b7688a7d948229a58c2684db19de2","FileName":"motherScan.mpg","FilePath":"game/video"
+      }
+      ],"MediaID":0,"MD5":"c44b7688a7d948229a58c2684db19de2","SHA1":"e0e06a5796fc5def42e01f61f5c3678a583c4c56","Category":8,"MediaSize":"25974788"
+    },
+    {
+      "odata.id":"Media(\"4a592ac24a4b88cc5a785a25c2f1874d\")","MediaFiles@odata.navigationLinkUrl":"/Media(4a592ac24a4b88cc5a785a25c2f1874d)/MediaFiles","MediaFiles":[
+      {
+        "Media@odata.navigationLinkUrl":"/MediaFiles(FileName='eelScan.mpg',FilePath='game/video',MD5=4a592ac24a4b88cc5a785a25c2f1874d)","MD5":"4a592ac24a4b88cc5a785a25c2f1874d","FileName":"eelScan.mpg","FilePath":"game/video"
+      }
+      ],"MediaID":0,"MD5":"4a592ac24a4b88cc5a785a25c2f1874d","SHA1":"2733a289d19ad9870535e901960239b27e3d06b8","Category":8,"MediaSize":"21690372"
+    }
+  ]
+}
