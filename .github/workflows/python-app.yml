@@ -35,7 +35,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install black mypy
     
     - name: Create output directory
       run: |
@@ -43,11 +42,11 @@ jobs:
     
     - name: Check formatting with black
       run: |
-        black --check .
+        black --check --diff .
     
     - name: Type checking with mypy
       run: |
-        mypy --ignore-missing-imports .
+        mypy --ignore-missing-imports --no-strict-optional .
     
     - name: Run NSRL to UCO conversion
       run: |

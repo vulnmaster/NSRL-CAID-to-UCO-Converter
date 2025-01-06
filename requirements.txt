@@ -2,6 +2,5 @@
 case_utils>=0.12.1
 
 # Development dependencies
-pytest>=7.0.0
-mypy>=1.0.0
-black>=23.0.0 
+black>=23.0.0
+mypy>=1.0.0 
