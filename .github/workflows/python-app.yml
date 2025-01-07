@@ -54,4 +54,15 @@ jobs:
       
       - name: List output directory
         run: |
-          ls -la output/ 
+          ls -la output/
+          echo "Output file contents:"
+          cat output/uco-NSRL-CAID-ART.json
+
+      - name: Validate UCO output
+        uses: kchason/case-validation-action@v2.9.0
+        with:
+          case-path: ./output/uco-NSRL-CAID-ART.json
+          case-version: case-1.3.0
+          extension-filter: json
+          abort: false
+          report-in-pr: false 
