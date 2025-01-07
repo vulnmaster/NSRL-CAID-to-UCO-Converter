@@ -384,17 +384,28 @@ class NSRLConverter:
 
             # Create environment object with proper IRI
             env_id = self.create_identifier("environment", "python")
+            env_facet_id = self.create_identifier("facet", "python-env")
+            
+            # Create environment facet
+            env_facet = {
+                "@id": env_facet_id,
+                "@type": "uco-observable:EnvironmentFacet",
+                "uco-core:name": "Python Environment",
+                "uco-core:description": f"Python {sys.version}"
+            }
+            
+            # Create environment object
             env_obj = {
                 "@id": env_id,
                 "@type": "uco-observable:ObservableObject",
                 "uco-core:name": "Python Environment",
-                "uco-core:description": f"Python {sys.version}",
                 "uco-core:objectCreatedTime": {
                     "@type": "xsd:dateTime",
                     "@value": current_time
-                }
+                },
+                "uco-core:hasFacet": [{"@id": env_facet_id}]
             }
-            objects.append(env_obj)
+            objects.extend([env_facet, env_obj])
 
             # Create action object with proper environment reference
             action_obj = {
@@ -415,7 +426,7 @@ class NSRLConverter:
                     "@value": current_time
                 },
                 "uco-action:performer": {"@id": tool_id},
-                "uco-core:hasFacet": [{"@id": env_id}]
+                "uco-action:environment": {"@id": env_id}
             }
             objects.append(action_obj)
 
@@ -467,11 +478,25 @@ class NSRLConverter:
                 for media_file in media.get("MediaFiles", []):
                     facet_id = self.create_identifier("facet", f"{media_id}-{media_file.get('MD5', 'unknown')}")
                     hash_id = self.create_identifier("hash", media_file.get("MD5", "unknown"))
+                    hash_facet_id = self.create_identifier("facet", f"hash-{media_file.get('MD5', 'unknown')}")
                     
                     # Create hash object
                     hash_obj = {
                         "@id": hash_id,
                         "@type": "uco-types:Hash",
+                        "uco-core:objectCreatedTime": {
+                            "@type": "xsd:dateTime",
+                            "@value": current_time
+                        },
+                        "uco-core:hasFacet": [{
+                            "@id": hash_facet_id
+                        }]
+                    }
+                    
+                    # Create hash facet
+                    hash_facet = {
+                        "@id": hash_facet_id,
+                        "@type": "uco-types:HashFacet",
                         "uco-types:hashMethod": {
                             "@type": "uco-vocabulary:HashNameVocab",
                             "@value": "MD5"
@@ -495,8 +520,7 @@ class NSRLConverter:
                     file_obj["uco-core:hasFacet"].append({"@id": facet_id})
                     
                     # Add facet and hash objects to graph
-                    objects.append(file_facet)
-                    objects.append(hash_obj)
+                    objects.extend([file_facet, hash_facet, hash_obj])
 
                 # Add relationship between action and file
                 objects.append({
@@ -514,8 +538,16 @@ class NSRLConverter:
 
                 objects.append(file_obj)
 
-            # Add all objects to the bundle's object list
-            objects[0]["uco-core:object"] = [{"@id": obj["@id"]} for obj in objects[1:]]
+            # Add only UcoObjects to the bundle's object list
+            objects[0]["uco-core:object"] = [{"@id": obj["@id"]} for obj in objects[1:] 
+                                           if obj["@type"] in ["uco-identity:Organization", 
+                                                             "uco-observable:URL",
+                                                             "uco-tool:ConfiguredTool",
+                                                             "uco-observable:ObservableObject",
+                                                             "uco-action:Action",
+                                                             "uco-core:Relationship",
+                                                             "uco-observable:File",
+                                                             "uco-types:Hash"]]
 
             # Create the UCO object
             uco_object = {
