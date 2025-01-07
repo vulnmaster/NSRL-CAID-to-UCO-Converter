@@ -363,19 +363,30 @@ class NSRLConverter:
 
                 # Add file facet for each media file
                 for media_file in media.get("MediaFiles", []):
+                    facet_id = self.create_identifier("facet", f"{media_id}-{media_file.get('MD5', 'unknown')}")
+                    hash_id = self.create_identifier("hash", media_file.get("MD5", "unknown"))
+                    
                     file_facet = {
+                        "@id": facet_id,
                         "@type": "uco-observable:FileFacet",
                         "uco-observable:fileName": media_file.get("FileName", ""),
                         "uco-observable:filePath": media_file.get("FilePath", ""),
                         "uco-observable:hash": [
                             {
+                                "@id": hash_id,
                                 "@type": "uco-types:Hash",
-                                "uco-types:hashMethod": {"@value": "MD5"},
-                                "uco-types:hashValue": {"@value": media_file.get("MD5", "")}
+                                "uco-types:hashMethod": {
+                                    "@type": "uco-vocabulary:HashNameVocab",
+                                    "@value": "MD5"
+                                },
+                                "uco-types:hashValue": {
+                                    "@type": "xsd:hexBinary",
+                                    "@value": media_file.get("MD5", "").upper()
+                                }
                             }
                         ]
                     }
-                    file_obj["uco-core:hasFacet"].append(file_facet)
+                    file_obj["uco-core:hasFacet"].append({"@id": facet_id})
 
                 objects.append(file_obj)
 

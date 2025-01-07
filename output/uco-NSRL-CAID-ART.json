@@ -11,28 +11,15 @@
   },
   "@graph": [
     {
-      "@id": "kb:tool-0-cce8f8b6-9cae-4ea9-8db7-06898c4949a8",
+      "@id": "kb:tool-0-5b8a0b62-e56c-4632-9326-74e6fb0a31f1",
       "@type": "uco-observable:File",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T01:11:16.961690Z"
+        "@value": "2025-01-07T01:14:59.673785Z"
       },
       "uco-core:hasFacet": [
         {
-          "@type": "uco-observable:FileFacet",
-          "uco-observable:fileName": "build2.art",
-          "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
-          "uco-observable:hash": [
-            {
-              "@type": "uco-types:Hash",
-              "uco-types:hashMethod": {
-                "@value": "MD5"
-              },
-              "uco-types:hashValue": {
-                "@value": "588cd1c0e48916d8e7403310402d0a68"
-              }
-            }
-          ]
+          "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-6e444f18-cd40-405f-a67b-74db610f5610"
         }
       ]
     }
