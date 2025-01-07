@@ -30,7 +30,7 @@ except ImportError as e:
 
 import argparse
 import datetime
-from datetime import UTC
+from datetime import timezone
 import hashlib
 import logging
 import logging.handlers
@@ -133,7 +133,7 @@ class NSRLConverter:
 
     def _create_constant_objects(self) -> Dict:
         """Create constant UCO objects (Tool, Organization, Source)."""
-        current_time = datetime.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        current_time = datetime.datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         
         return {
             "tool": {
@@ -171,7 +171,7 @@ class NSRLConverter:
         """Create UCO Bundle object with relationships."""
         bundle_id = f"kb:bundle-{uuid.uuid4()}"
         constant_objects = self._create_constant_objects()
-        current_time = self._format_datetime(datetime.datetime.now(UTC))
+        current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
         
         # Create the bundle with proper description
         bundle = {
@@ -219,7 +219,7 @@ class NSRLConverter:
 
     def _create_file_facet(self, media_file: MediaFile, media: Dict, facet_id: str) -> FileFacet:
         """Create UCO FileFacet from NSRL MediaFile and parent Media object."""
-        current_time = self._format_datetime(datetime.datetime.now(UTC))
+        current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
         hashes = []
         
         # Add MD5 hash from MediaFile
@@ -329,7 +329,7 @@ class NSRLConverter:
         """Process single NSRL CAID JSON file to UCO format."""
         try:
             self.logger.info(f"Processing {input_file}")
-            current_time = self._format_datetime(datetime.datetime.now(UTC))
+            current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
             
             self.logger.debug(f"Reading input file: {input_file}")
             try:
