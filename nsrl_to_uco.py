@@ -531,7 +531,7 @@ class NSRLConverter:
             if result:
                 processed_count += 1
                 if self.combine:
-                    combined_results.append(result["@graph"][0])
+                    combined_results.extend(result["@graph"])
             else:
                 error_count += 1
                 
@@ -539,18 +539,16 @@ class NSRLConverter:
             for file_path in input_path.glob("*.json"):
                 result = self.process_file(file_path)
                 if result:
-                    # Always write individual output
-                    self._write_output(result, file_path)
                     processed_count += 1
                     if self.combine:
-                        combined_results.append(result["@graph"][0])
+                        combined_results.extend(result["@graph"])
                 else:
                     error_count += 1
                     
         # If combine flag is set, create additional combined file
         if self.combine and combined_results:
             combined = {
-                **UCO_CONTEXT,
+                "@context": UCO_CONTEXT["@context"],
                 "@graph": combined_results
             }
             output_file = self.output_dir / "uco-combined.json"
@@ -615,11 +613,10 @@ def main() -> None:
         root_logger.debug("Debug logging enabled")
     
     converter = NSRLConverter(
-        args.input,
-        args.output,
-        args.combine,
-        args.validate,
-        args.log_file
+        input_path=args.input,
+        output_dir=args.output,
+        log_file=args.log_file,
+        combine=args.combine
     )
     converter.process_input()
 
