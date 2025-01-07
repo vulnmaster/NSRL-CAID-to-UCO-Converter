@@ -163,11 +163,15 @@ class NSRLConverter:
             }
         }
 
+    def _format_datetime(self, dt: datetime.datetime) -> str:
+        """Format datetime in UCO-compliant format."""
+        return dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
     def _create_bundle(self) -> Dict:
         """Create UCO Bundle object with relationships."""
         bundle_id = f"kb:bundle-{uuid.uuid4()}"
         constant_objects = self._create_constant_objects()
-        current_time = datetime.datetime.now(UTC).isoformat().replace('+00:00', 'Z')
+        current_time = self._format_datetime(datetime.datetime.now(UTC))
         
         # Create the bundle with proper description
         bundle = {
@@ -215,7 +219,7 @@ class NSRLConverter:
 
     def _create_file_facet(self, media_file: MediaFile, media: Dict, facet_id: str) -> FileFacet:
         """Create UCO FileFacet from NSRL MediaFile and parent Media object."""
-        current_time = datetime.datetime.now(UTC).isoformat().replace('+00:00', 'Z')
+        current_time = self._format_datetime(datetime.datetime.now(UTC))
         hashes = []
         
         # Add MD5 hash from MediaFile
@@ -325,7 +329,7 @@ class NSRLConverter:
         """Process single NSRL CAID JSON file to UCO format."""
         try:
             self.logger.info(f"Processing {input_file}")
-            current_time = datetime.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            current_time = self._format_datetime(datetime.datetime.now(UTC))
             
             self.logger.debug(f"Reading input file: {input_file}")
             try:
@@ -364,7 +368,10 @@ class NSRLConverter:
                 "@id": input_id,
                 "@type": "uco-observable:File",
                 "uco-core:name": input_file.name,
-                "uco-core:objectCreatedTime": current_time,
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
                 "uco-core:specVersion": "1.3.0",
                 "uco-core:hasFacet": [
                     {
@@ -392,12 +399,15 @@ class NSRLConverter:
             input_relationship = {
                 "@id": f"kb:relationship-{uuid.uuid4()}",
                 "@type": "uco-observable:ObservableRelationship",
-                "uco-core:source": input_id,
-                "uco-core:target": "kb:source-nsrl-caid",
+                "uco-core:source": {"@id": input_id},
+                "uco-core:target": {"@id": "kb:source-nsrl-caid"},
                 "uco-core:kindOfRelationship": "derivedFrom",
                 "uco-core:isDirectional": True,
                 "uco-core:specVersion": "1.3.0",
-                "uco-core:objectCreatedTime": current_time
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                }
             }
             
             bundle["uco-core:object"].extend([input_file_obj, input_relationship])
@@ -410,7 +420,10 @@ class NSRLConverter:
                     "@id": f"kb:media-{uuid.uuid4()}",
                     "@type": "uco-observable:File",
                     "uco-core:specVersion": "1.3.0",
-                    "uco-core:objectCreatedTime": current_time,
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    },
                     "uco-core:hasFacet": []
                 }
                 
