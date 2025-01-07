@@ -366,27 +366,35 @@ class NSRLConverter:
                     facet_id = self.create_identifier("facet", f"{media_id}-{media_file.get('MD5', 'unknown')}")
                     hash_id = self.create_identifier("hash", media_file.get("MD5", "unknown"))
                     
+                    # Create hash object
+                    hash_obj = {
+                        "@id": hash_id,
+                        "@type": "uco-types:Hash",
+                        "uco-types:hashMethod": {
+                            "@type": "uco-vocabulary:HashNameVocab",
+                            "@value": "MD5"
+                        },
+                        "uco-types:hashValue": {
+                            "@type": "xsd:hexBinary",
+                            "@value": media_file.get("MD5", "").upper()
+                        }
+                    }
+                    
+                    # Create file facet
                     file_facet = {
                         "@id": facet_id,
                         "@type": "uco-observable:FileFacet",
                         "uco-observable:fileName": media_file.get("FileName", ""),
                         "uco-observable:filePath": media_file.get("FilePath", ""),
-                        "uco-observable:hash": [
-                            {
-                                "@id": hash_id,
-                                "@type": "uco-types:Hash",
-                                "uco-types:hashMethod": {
-                                    "@type": "uco-vocabulary:HashNameVocab",
-                                    "@value": "MD5"
-                                },
-                                "uco-types:hashValue": {
-                                    "@type": "xsd:hexBinary",
-                                    "@value": media_file.get("MD5", "").upper()
-                                }
-                            }
-                        ]
+                        "uco-observable:hash": [{"@id": hash_id}]
                     }
+                    
+                    # Add reference to facet in file object
                     file_obj["uco-core:hasFacet"].append({"@id": facet_id})
+                    
+                    # Add facet and hash objects to graph
+                    objects.append(file_facet)
+                    objects.append(hash_obj)
 
                 objects.append(file_obj)
 
