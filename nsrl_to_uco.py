@@ -354,7 +354,8 @@ class NSRLConverter:
                     "uco-core:objectCreatedTime": {
                         "@type": "xsd:dateTime",
                         "@value": current_time
-                    }
+                    },
+                    "uco-core:object": []  # Will be populated with all other objects
                 },
                 {
                     "@id": nist_id,
@@ -374,33 +375,49 @@ class NSRLConverter:
                     "@type": "uco-tool:ConfiguredTool",
                     "uco-core:name": "nsrl_to_uco.py",
                     "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
-                    "uco-core:version": "1.0.0",
                     "uco-core:objectCreatedTime": {
                         "@type": "xsd:dateTime",
                         "@value": current_time
                     }
-                },
-                {
-                    "@id": action_id,
-                    "@type": "uco-action:Action",
-                    "uco-core:name": "NSRL CAID to UCO Conversion",
-                    "uco-core:description": "Conversion of NSRL CAID data to UCO format",
-                    "uco-action:startTime": {
-                        "@type": "xsd:dateTime",
-                        "@value": current_time
-                    },
-                    "uco-action:endTime": {
-                        "@type": "xsd:dateTime",
-                        "@value": current_time
-                    },
-                    "uco-action:performer": {"@id": tool_id},
-                    "uco-action:environment": {
-                        "@type": "uco-configuration:ConfigurationSetting",
-                        "uco-configuration:itemName": "Python Environment",
-                        "uco-configuration:itemValue": f"Python {sys.version}"
-                    }
                 }
             ]
+
+            # Create environment object with proper IRI
+            env_id = self.create_identifier("environment", "python")
+            env_obj = {
+                "@id": env_id,
+                "@type": "uco-observable:ObservableObject",
+                "uco-core:name": "Python Environment",
+                "uco-core:description": f"Python {sys.version}",
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                }
+            }
+            objects.append(env_obj)
+
+            # Create action object with proper environment reference
+            action_obj = {
+                "@id": action_id,
+                "@type": "uco-action:Action",
+                "uco-core:name": "NSRL CAID to UCO Conversion",
+                "uco-core:description": "Conversion of NSRL CAID data to UCO format",
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
+                "uco-action:startTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
+                "uco-action:endTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
+                "uco-action:performer": {"@id": tool_id},
+                "uco-core:hasFacet": [{"@id": env_id}]
+            }
+            objects.append(action_obj)
 
             # Add relationships
             objects.extend([
@@ -497,6 +514,9 @@ class NSRLConverter:
 
                 objects.append(file_obj)
 
+            # Add all objects to the bundle's object list
+            objects[0]["uco-core:object"] = [{"@id": obj["@id"]} for obj in objects[1:]]
+
             # Create the UCO object
             uco_object = {
                 "@context": {
@@ -508,7 +528,6 @@ class NSRLConverter:
                     "uco-vocabulary": "https://ontology.unifiedcyberontology.org/uco/vocabulary/",
                     "uco-identity": "https://ontology.unifiedcyberontology.org/uco/identity/",
                     "uco-action": "https://ontology.unifiedcyberontology.org/uco/action/",
-                    "uco-configuration": "https://ontology.unifiedcyberontology.org/uco/configuration/",
                     "kb": "http://example.org/kb/",
                     "xsd": "http://www.w3.org/2001/XMLSchema#"
                 },
