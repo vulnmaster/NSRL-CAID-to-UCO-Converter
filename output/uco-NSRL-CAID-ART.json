@@ -6,23 +6,113 @@
     "uco-tool": "https://ontology.unifiedcyberontology.org/uco/tool/",
     "uco-types": "https://ontology.unifiedcyberontology.org/uco/types/",
     "uco-vocabulary": "https://ontology.unifiedcyberontology.org/uco/vocabulary/",
+    "uco-identity": "https://ontology.unifiedcyberontology.org/uco/identity/",
+    "uco-action": "https://ontology.unifiedcyberontology.org/uco/action/",
+    "uco-configuration": "https://ontology.unifiedcyberontology.org/uco/configuration/",
     "kb": "http://example.org/kb/",
     "xsd": "http://www.w3.org/2001/XMLSchema#"
   },
   "@graph": [
     {
-      "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-20db7c89-13c3-49b1-a58b-8a636dc3154a",
+      "@id": "kb:bundle-nsrl-caid-2c7633bd-6150-4d19-98cf-100e2dc4a698",
+      "@type": "uco-core:Bundle",
+      "uco-core:description": "NSRL CAID media file reference data converted to UCO format",
+      "uco-core:objectCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      }
+    },
+    {
+      "@id": "kb:org-nist-4e69eed6-82c0-4c09-a065-8d1b5be1b4e8",
+      "@type": "uco-identity:Organization",
+      "uco-core:name": "National Institute of Standards and Technology",
+      "uco-core:description": "NIST maintains the NSRL CAID repository"
+    },
+    {
+      "@id": "kb:source-nsrl-caid-5549a6e3-3dfb-4200-8af3-028821285ff1",
+      "@type": "uco-observable:URL",
+      "uco-core:name": "NSRL CAID Repository",
+      "uco-core:description": "National Software Reference Library - Comprehensive Application Identifier",
+      "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
+    },
+    {
+      "@id": "kb:tool-nsrl-to-uco-2aa640ac-d004-4afd-8b50-e78cd5ff25fc",
+      "@type": "uco-tool:ConfiguredTool",
+      "uco-core:name": "nsrl_to_uco.py",
+      "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
+      "uco-core:version": "1.0.0",
+      "uco-core:objectCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      }
+    },
+    {
+      "@id": "kb:action-conversion-2e087b76-cd47-4982-b2de-97caa7f92441",
+      "@type": "uco-action:Action",
+      "uco-core:name": "NSRL CAID to UCO Conversion",
+      "uco-core:description": "Conversion of NSRL CAID data to UCO format",
+      "uco-action:startTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      },
+      "uco-action:endTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      },
+      "uco-action:performer": {
+        "@id": "kb:tool-nsrl-to-uco-2aa640ac-d004-4afd-8b50-e78cd5ff25fc"
+      },
+      "uco-action:environment": {
+        "@type": "uco-configuration:ConfigurationSetting",
+        "uco-configuration:itemName": "Python Environment",
+        "uco-configuration:itemValue": "Python 3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]"
+      }
+    },
+    {
+      "@id": "kb:relationship-source-maintainer-f8d2b7f3-35ec-4779-8473-768f5a2e64c3",
+      "@type": "uco-core:Relationship",
+      "uco-core:source": {
+        "@id": "kb:source-nsrl-caid-5549a6e3-3dfb-4200-8af3-028821285ff1"
+      },
+      "uco-core:target": {
+        "@id": "kb:org-nist-4e69eed6-82c0-4c09-a065-8d1b5be1b4e8"
+      },
+      "uco-core:kindOfRelationship": "maintainedBy",
+      "uco-core:isDirectional": true,
+      "uco-core:objectCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      }
+    },
+    {
+      "@id": "kb:relationship-action-source-318a75f2-a66b-4e0d-b3d7-7578139e546d",
+      "@type": "uco-core:Relationship",
+      "uco-core:source": {
+        "@id": "kb:action-conversion-2e087b76-cd47-4982-b2de-97caa7f92441"
+      },
+      "uco-core:target": {
+        "@id": "kb:source-nsrl-caid-5549a6e3-3dfb-4200-8af3-028821285ff1"
+      },
+      "uco-core:kindOfRelationship": "inputSource",
+      "uco-core:isDirectional": true,
+      "uco-core:objectCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      }
+    },
+    {
+      "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-4971ce11-471e-4f57-814d-9a6b3d304fed",
       "@type": "uco-observable:FileFacet",
       "uco-observable:fileName": "build2.art",
       "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
       "uco-observable:hash": [
         {
-          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-5d4d826a-1e20-4033-b1c6-6a2fd649df11"
+          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-054370a1-f547-4720-b991-62cafb21ac9a"
         }
       ]
     },
     {
-      "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-5d4d826a-1e20-4033-b1c6-6a2fd649df11",
+      "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-054370a1-f547-4720-b991-62cafb21ac9a",
       "@type": "uco-types:Hash",
       "uco-types:hashMethod": {
         "@type": "uco-vocabulary:HashNameVocab",
@@ -34,15 +124,31 @@
       }
     },
     {
-      "@id": "kb:tool-0-b737c46f-cc92-4b94-a71f-22bdbc3729b5",
+      "@id": "kb:relationship-action-file-0-a20996a6-74cc-4bab-813b-e1e59449b679",
+      "@type": "uco-core:Relationship",
+      "uco-core:source": {
+        "@id": "kb:action-conversion-2e087b76-cd47-4982-b2de-97caa7f92441"
+      },
+      "uco-core:target": {
+        "@id": "kb:file-0-0801c09f-23e5-4f23-9d6f-62bab62e42ac"
+      },
+      "uco-core:kindOfRelationship": "outputFile",
+      "uco-core:isDirectional": true,
+      "uco-core:objectCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T01:35:43.701316Z"
+      }
+    },
+    {
+      "@id": "kb:file-0-0801c09f-23e5-4f23-9d6f-62bab62e42ac",
       "@type": "uco-observable:File",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T01:18:12.058179Z"
+        "@value": "2025-01-07T01:35:43.701316Z"
       },
       "uco-core:hasFacet": [
         {
-          "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-20db7c89-13c3-49b1-a58b-8a636dc3154a"
+          "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-4971ce11-471e-4f57-814d-9a6b3d304fed"
         }
       ]
     }

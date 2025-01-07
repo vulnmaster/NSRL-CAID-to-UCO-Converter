@@ -336,28 +336,113 @@ class NSRLConverter:
                 self.logger.error("Invalid NSRL CAID JSON format: missing 'value' key")
                 return None
 
-            # Create identifiers with UUIDs
-            source_id = self.create_identifier("source", "nsrl-caid")
-            nist_id = self.create_identifier("org", "nist")
-            linux_foundation_id = self.create_identifier("org", "linux-foundation")
+            current_time = get_current_time()
 
-            # Create objects for each media item
-            objects = []
+            # Create identifiers with UUIDs
+            bundle_id = self.create_identifier("bundle", "nsrl-caid")
+            tool_id = self.create_identifier("tool", "nsrl-to-uco")
+            nist_id = self.create_identifier("org", "nist")
+            source_id = self.create_identifier("source", "nsrl-caid")
+            action_id = self.create_identifier("action", "conversion")
+
+            # Create the base objects
+            objects = [
+                {
+                    "@id": bundle_id,
+                    "@type": "uco-core:Bundle",
+                    "uco-core:description": "NSRL CAID media file reference data converted to UCO format",
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    }
+                },
+                {
+                    "@id": nist_id,
+                    "@type": "uco-identity:Organization",
+                    "uco-core:name": "National Institute of Standards and Technology",
+                    "uco-core:description": "NIST maintains the NSRL CAID repository"
+                },
+                {
+                    "@id": source_id,
+                    "@type": "uco-observable:URL",
+                    "uco-core:name": "NSRL CAID Repository",
+                    "uco-core:description": "National Software Reference Library - Comprehensive Application Identifier",
+                    "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
+                },
+                {
+                    "@id": tool_id,
+                    "@type": "uco-tool:ConfiguredTool",
+                    "uco-core:name": "nsrl_to_uco.py",
+                    "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
+                    "uco-core:version": "1.0.0",
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    }
+                },
+                {
+                    "@id": action_id,
+                    "@type": "uco-action:Action",
+                    "uco-core:name": "NSRL CAID to UCO Conversion",
+                    "uco-core:description": "Conversion of NSRL CAID data to UCO format",
+                    "uco-action:startTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    },
+                    "uco-action:endTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    },
+                    "uco-action:performer": {"@id": tool_id},
+                    "uco-action:environment": {
+                        "@type": "uco-configuration:ConfigurationSetting",
+                        "uco-configuration:itemName": "Python Environment",
+                        "uco-configuration:itemValue": f"Python {sys.version}"
+                    }
+                }
+            ]
+
+            # Add relationships
+            objects.extend([
+                {
+                    "@id": self.create_identifier("relationship", "source-maintainer"),
+                    "@type": "uco-core:Relationship",
+                    "uco-core:source": {"@id": source_id},
+                    "uco-core:target": {"@id": nist_id},
+                    "uco-core:kindOfRelationship": "maintainedBy",
+                    "uco-core:isDirectional": True,
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    }
+                },
+                {
+                    "@id": self.create_identifier("relationship", "action-source"),
+                    "@type": "uco-core:Relationship",
+                    "uco-core:source": {"@id": action_id},
+                    "uco-core:target": {"@id": source_id},
+                    "uco-core:kindOfRelationship": "inputSource",
+                    "uco-core:isDirectional": True,
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    }
+                }
+            ])
+
+            # Process each media item
             for media in media_list:
                 media_id = media.get("MediaID", "unknown")
-                tool_id = self.create_identifier("tool", str(media_id))
-
-                # Format datetime properly for xsd:dateTime
-                created_time = {
-                    "@type": "xsd:dateTime",
-                    "@value": get_current_time()
-                }
+                file_id = self.create_identifier("file", str(media_id))
 
                 # Create file object
                 file_obj = {
-                    "@id": tool_id,
+                    "@id": file_id,
                     "@type": "uco-observable:File",
-                    "uco-core:objectCreatedTime": created_time,
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    },
                     "uco-core:hasFacet": []
                 }
 
@@ -396,6 +481,20 @@ class NSRLConverter:
                     objects.append(file_facet)
                     objects.append(hash_obj)
 
+                # Add relationship between action and file
+                objects.append({
+                    "@id": self.create_identifier("relationship", f"action-file-{media_id}"),
+                    "@type": "uco-core:Relationship",
+                    "uco-core:source": {"@id": action_id},
+                    "uco-core:target": {"@id": file_id},
+                    "uco-core:kindOfRelationship": "outputFile",
+                    "uco-core:isDirectional": True,
+                    "uco-core:objectCreatedTime": {
+                        "@type": "xsd:dateTime",
+                        "@value": current_time
+                    }
+                })
+
                 objects.append(file_obj)
 
             # Create the UCO object
@@ -407,6 +506,9 @@ class NSRLConverter:
                     "uco-tool": "https://ontology.unifiedcyberontology.org/uco/tool/",
                     "uco-types": "https://ontology.unifiedcyberontology.org/uco/types/",
                     "uco-vocabulary": "https://ontology.unifiedcyberontology.org/uco/vocabulary/",
+                    "uco-identity": "https://ontology.unifiedcyberontology.org/uco/identity/",
+                    "uco-action": "https://ontology.unifiedcyberontology.org/uco/action/",
+                    "uco-configuration": "https://ontology.unifiedcyberontology.org/uco/configuration/",
                     "kb": "http://example.org/kb/",
                     "xsd": "http://www.w3.org/2001/XMLSchema#"
                 },
