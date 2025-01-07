@@ -74,55 +74,42 @@ UCO_CONTEXT = {
     }
 }
 
+def generate_uuid():
+    return str(uuid.uuid4())
+
+def get_current_time():
+    """Get current time in ISO format with UTC timezone."""
+    return datetime.datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
 @dataclass
 class NSRLConverter:
     """Converts NSRL CAID JSON to UCO format."""
     
-    input_path: Union[str, Path]
-    output_dir: Union[str, Path]
-    combine: bool = False
-    validate: bool = False
+    input_path: Path
+    output_dir: str = "output"
     log_file: Optional[str] = None
+    combine: bool = False
     processed_files: Set[str] = field(default_factory=set)
+    uuids: Dict[str, str] = field(default_factory=dict)
+    logger: logging.Logger = field(init=False)
     
     def __post_init__(self) -> None:
-        """Initialize converter with logging and tool info."""
-        self._setup_logging()
-        self.tool_id = self._generate_tool_id()
+        """Initialize converter with logging and output directory."""
+        # Configure logging
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.StreamHandler(),
+                logging.FileHandler(self.log_file) if self.log_file else logging.NullHandler()
+            ]
+        )
+        self.logger = logging.getLogger(__name__)
+        self.logger.debug("Logging initialized at DEBUG level")
+
+        # Create output directory
         self.output_dir = Path(self.output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.logger.debug(f"Initialized converter with tool_id: {self.tool_id}")
-
-    def _setup_logging(self) -> None:
-        """Configure logging with file and console handlers."""
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)  # Always set to DEBUG for class logger
-        
-        # Remove any existing handlers
-        self.logger.handlers = []
-        
-        # Console handler
-        console = logging.StreamHandler()
-        console.setLevel(logging.DEBUG)  # Set console handler to DEBUG
-        console.setFormatter(logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s'
-        ))
-        self.logger.addHandler(console)
-        
-        # File handler if specified
-        if self.log_file:
-            file_handler = logging.handlers.RotatingFileHandler(
-                self.log_file,
-                maxBytes=10485760,  # 10MB
-                backupCount=5
-            )
-            file_handler.setLevel(logging.DEBUG)  # Set file handler to DEBUG
-            file_handler.setFormatter(logging.Formatter(
-                '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
-            ))
-            self.logger.addHandler(file_handler)
-            
-        self.logger.debug("Logging initialized at DEBUG level")
 
     def _generate_tool_id(self) -> str:
         """Generate deterministic tool ID based on script contents."""
@@ -325,146 +312,99 @@ class NSRLConverter:
         
         return facet
 
+    def get_uuid_for_id(self, prefix, id_str):
+        key = f"{prefix}-{id_str}"
+        if key not in self.uuids:
+            self.uuids[key] = str(uuid.uuid4())
+        return self.uuids[key]
+
+    def create_identifier(self, prefix, id_str):
+        uuid_str = self.get_uuid_for_id(prefix, id_str)
+        return f"kb:{prefix}-{id_str}-{uuid_str}"
+
     def process_file(self, input_file: Path) -> Optional[Dict]:
         """Process single NSRL CAID JSON file to UCO format."""
         try:
             self.logger.info(f"Processing {input_file}")
-            current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
-            
-            self.logger.debug(f"Reading input file: {input_file}")
-            try:
-                with open(input_file, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                    self.logger.debug(f"File content length: {len(content)} bytes")
-                    try:
-                        data = json.loads(content)
-                        self.logger.debug("Successfully parsed JSON content")
-                    except json.JSONDecodeError as je:
-                        self.logger.error(f"JSON decode error at line {je.lineno}, column {je.colno}: {je.msg}")
-                        self.logger.error(f"Error context: {content[max(0, je.pos-50):je.pos+50]}")
-                        raise
-            except Exception as e:
-                self.logger.error(f"Error reading file: {str(e)}")
-                raise
-                
+            with open(input_file, 'r') as f:
+                data = json.load(f)
+
             # Handle both direct value array and odata.metadata format
-            if isinstance(data, dict):
-                if "value" not in data:
-                    self.logger.error("Invalid NSRL CAID JSON format: missing 'value' key")
-                    self.logger.debug(f"Available keys: {list(data.keys())}")
-                    raise ValueError("Invalid NSRL CAID JSON format: missing 'value' key")
+            if isinstance(data, dict) and "value" in data:
                 media_list = data["value"]
             else:
-                self.logger.error("Invalid NSRL CAID JSON format: root must be an object")
-                raise ValueError("Invalid NSRL CAID JSON format: root must be an object")
-                
-            self.logger.debug(f"Found {len(media_list)} media objects")
-            
-            bundle = self._create_bundle()
-            input_id = f"kb:input-{uuid.uuid4()}"
-            
-            # Add input file object and its relationship
-            input_file_obj = {
-                "@id": input_id,
-                "@type": "uco-observable:File",
-                "uco-core:name": input_file.name,
-                "uco-core:objectCreatedTime": {
-                    "@type": "xsd:dateTime",
-                    "@value": current_time
-                },
-                "uco-core:specVersion": "1.3.0",
-                "uco-core:hasFacet": [
-                    {
-                        "@id": f"kb:file-facet-{uuid.uuid4()}",
-                        "@type": "uco-observable:FileFacet",
-                        "uco-observable:fileName": input_file.name,
-                        "uco-observable:extension": input_file.suffix[1:] if input_file.suffix else "",
-                        "uco-observable:isDirectory": False,
-                        "uco-observable:observableCreatedTime": {
-                            "@type": "xsd:dateTime",
-                            "@value": current_time
-                        },
-                        "uco-observable:modifiedTime": {
-                            "@type": "xsd:dateTime",
-                            "@value": current_time
-                        },
-                        "uco-observable:accessedTime": {
-                            "@type": "xsd:dateTime",
-                            "@value": current_time
-                        }
-                    }
-                ]
-            }
-            
-            input_relationship = {
-                "@id": f"kb:relationship-{uuid.uuid4()}",
-                "@type": "uco-observable:ObservableRelationship",
-                "uco-core:source": {"@id": input_id},
-                "uco-core:target": {"@id": "kb:source-nsrl-caid"},
-                "uco-core:kindOfRelationship": "derivedFrom",
-                "uco-core:isDirectional": True,
-                "uco-core:specVersion": "1.3.0",
-                "uco-core:objectCreatedTime": {
-                    "@type": "xsd:dateTime",
-                    "@value": current_time
-                }
-            }
-            
-            bundle["uco-core:object"].extend([input_file_obj, input_relationship])
-            
-            # Process each media object
+                self.logger.error("Invalid NSRL CAID JSON format: missing 'value' key")
+                return None
+
+            # Create identifiers with UUIDs
+            source_id = self.create_identifier("source", "nsrl-caid")
+            nist_id = self.create_identifier("org", "nist")
+            linux_foundation_id = self.create_identifier("org", "linux-foundation")
+
+            # Create objects for each media item
+            objects = []
             for media in media_list:
-                self.logger.debug(f"Processing media object with ID: {media.get('MediaID')}")
-                
+                media_id = media.get("MediaID", "unknown")
+                tool_id = self.create_identifier("tool", str(media_id))
+
+                # Format datetime properly for xsd:dateTime
+                created_time = {
+                    "@type": "xsd:dateTime",
+                    "@value": get_current_time()
+                }
+
+                # Create file object
                 file_obj = {
-                    "@id": f"kb:media-{uuid.uuid4()}",
+                    "@id": tool_id,
                     "@type": "uco-observable:File",
-                    "uco-core:specVersion": "1.3.0",
-                    "uco-core:objectCreatedTime": {
-                        "@type": "xsd:dateTime",
-                        "@value": current_time
-                    },
+                    "uco-core:objectCreatedTime": created_time,
                     "uco-core:hasFacet": []
                 }
-                
-                # Add categories if present
-                if "Category" in media:
-                    file_obj["uco-observable:categories"] = [
-                        {
-                            "@type": "uco-vocabulary:ObservableObjectCategoryVocab",
-                            "@value": str(media["Category"])
-                        }
-                    ]
-                
-                # Add file facets from MediaFiles
+
+                # Add file facet for each media file
                 for media_file in media.get("MediaFiles", []):
-                    file_facet_id = f"kb:file-facet-{uuid.uuid4()}"
-                    content_facet_id = f"kb:content-data-facet-{uuid.uuid4()}"
-                    
-                    file_obj["uco-core:hasFacet"].extend([
-                        self._create_file_facet(media_file, media, file_facet_id),
-                        self._create_content_data_facet(media_file, media, content_facet_id)
-                    ])
-                
-                bundle["uco-core:object"].append(file_obj)
-            
-            result = {**UCO_CONTEXT, "@graph": [bundle]}
-            
-            if not self.combine:
-                self._write_output(result, input_file)
-            
-            return result
+                    file_facet = {
+                        "@type": "uco-observable:FileFacet",
+                        "uco-observable:fileName": media_file.get("FileName", ""),
+                        "uco-observable:filePath": media_file.get("FilePath", ""),
+                        "uco-observable:hash": [
+                            {
+                                "@type": "uco-types:Hash",
+                                "uco-types:hashMethod": {"@value": "MD5"},
+                                "uco-types:hashValue": {"@value": media_file.get("MD5", "")}
+                            }
+                        ]
+                    }
+                    file_obj["uco-core:hasFacet"].append(file_facet)
+
+                objects.append(file_obj)
+
+            # Create the UCO object
+            uco_object = {
+                "@context": {
+                    "@vocab": "https://ontology.unifiedcyberontology.org/uco/",
+                    "uco-core": "https://ontology.unifiedcyberontology.org/uco/core/",
+                    "uco-observable": "https://ontology.unifiedcyberontology.org/uco/observable/",
+                    "uco-tool": "https://ontology.unifiedcyberontology.org/uco/tool/",
+                    "uco-types": "https://ontology.unifiedcyberontology.org/uco/types/",
+                    "uco-vocabulary": "https://ontology.unifiedcyberontology.org/uco/vocabulary/",
+                    "kb": "http://example.org/kb/",
+                    "xsd": "http://www.w3.org/2001/XMLSchema#"
+                },
+                "@graph": objects
+            }
+
+            # Write output file
+            output_file = self.output_dir / f"uco-{input_file.stem}.json"
+            with open(output_file, 'w') as f:
+                json.dump(uco_object, f, indent=2)
+            self.logger.info(f"Wrote output to {output_file}")
+
+            return uco_object
 
         except Exception as e:
-            self.logger.error(f"Error processing {input_file}: {str(e)}", exc_info=True)
+            self.logger.error(f"Error processing file {input_file}: {str(e)}")
             return None
-
-    def _write_output(self, result: Dict, input_file: Path) -> None:
-        """Write UCO output to file."""
-        output_file = self.output_dir / f"uco-{input_file.stem}.json"
-        with open(output_file, 'w') as f:
-            json.dump(result, f, indent=2)
-        self.logger.info(f"Written output to {output_file}")
 
     def process_input(self) -> None:
         """Process input path (file or directory)."""
