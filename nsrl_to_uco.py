@@ -167,7 +167,7 @@ class NSRLConverter:
         """Create UCO Bundle object with relationships."""
         bundle_id = f"kb:bundle-{uuid.uuid4()}"
         constant_objects = self._create_constant_objects()
-        current_time = datetime.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        current_time = datetime.datetime.now(UTC).isoformat().replace('+00:00', 'Z')
         
         # Create the bundle with proper description
         bundle = {
@@ -186,21 +186,27 @@ class NSRLConverter:
             {
                 "@id": f"kb:relationship-{uuid.uuid4()}",
                 "@type": "uco-observable:ObservableRelationship",
-                "uco-core:source": bundle_id,
-                "uco-core:target": self.tool_id,
+                "uco-core:source": {"@id": bundle_id},
+                "uco-core:target": {"@id": self.tool_id},
                 "uco-core:kindOfRelationship": "createdBy",
                 "uco-core:isDirectional": True,
-                "uco-core:objectCreatedTime": current_time,
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
                 "uco-core:specVersion": "1.3.0"
             },
             {
                 "@id": f"kb:relationship-{uuid.uuid4()}",
                 "@type": "uco-observable:ObservableRelationship",
-                "uco-core:source": "kb:source-nsrl-caid",
-                "uco-core:target": "kb:org-nist",
+                "uco-core:source": {"@id": "kb:source-nsrl-caid"},
+                "uco-core:target": {"@id": "kb:org-nist"},
                 "uco-core:kindOfRelationship": "managedBy",
                 "uco-core:isDirectional": True,
-                "uco-core:objectCreatedTime": current_time,
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
                 "uco-core:specVersion": "1.3.0"
             }
         ])
@@ -209,12 +215,14 @@ class NSRLConverter:
 
     def _create_file_facet(self, media_file: MediaFile, media: Dict, facet_id: str) -> FileFacet:
         """Create UCO FileFacet from NSRL MediaFile and parent Media object."""
-        current_time = datetime.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        current_time = datetime.datetime.now(UTC).isoformat().replace('+00:00', 'Z')
         hashes = []
         
         # Add MD5 hash from MediaFile
         if "MD5" in media_file:
+            hash_id = f"kb:hash-{uuid.uuid4()}"
             hashes.append({
+                "@id": hash_id,
                 "@type": "uco-types:Hash",
                 "uco-types:hashMethod": {
                     "@type": "uco-vocabulary:HashNameVocab",
@@ -228,7 +236,9 @@ class NSRLConverter:
             
         # Add SHA1 hash from parent Media object if present
         if "SHA1" in media:
+            hash_id = f"kb:hash-{uuid.uuid4()}"
             hashes.append({
+                "@id": hash_id,
                 "@type": "uco-types:Hash",
                 "uco-types:hashMethod": {
                     "@type": "uco-vocabulary:HashNameVocab",
