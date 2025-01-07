@@ -13,159 +13,73 @@
   },
   "@graph": [
     {
-      "@id": "kb:bundle-nsrl-caid-1e15cd1c-41ad-4eb1-8bfb-d82afc84d7ec",
+      "@id": "kb:bundle-nsrl-caid-cecfaeee-79e1-4524-b9cc-532b28771f91",
       "@type": "uco-core:Bundle",
       "uco-core:description": "NSRL CAID media file reference data converted to UCO format",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
+        "@value": "2025-01-07T03:00:13.744413Z"
       },
       "uco-core:object": [
         {
-          "@id": "kb:org-nist-59c6f0a5-a168-424d-bc0c-6315b0894734"
+          "@id": "kb:tool-nsrl-to-uco-fcd8e82f-2277-439a-a340-f124b5f0e9f5"
         },
         {
-          "@id": "kb:source-nsrl-caid-a3f05e85-6a83-4a82-9943-3dbffe0c74ce"
+          "@id": "kb:org-nist-de558c84-bec3-407c-92fb-e55b9eade63d"
         },
         {
-          "@id": "kb:tool-nsrl-to-uco-45cbdca2-e7a6-4aca-902d-a6301162458a"
+          "@id": "kb:source-nsrl-caid-65964ddd-ff33-413a-8e4a-814cd5abe532"
         },
         {
-          "@id": "kb:environment-python-1a104f36-f8d6-4082-956e-12b38895642f"
+          "@id": "kb:environment-python-b859776a-4dc3-4822-a6fa-21e9abf06cb5"
         },
         {
-          "@id": "kb:action-conversion-315bec33-05bf-4eac-81a0-e1cca3b104fa"
+          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-4436d12f-ad01-4eda-bec9-8297a165ad1c"
         },
         {
-          "@id": "kb:relationship-source-maintainer-121786fb-8ce7-4dc4-b6b0-8a2a2edf6c36"
+          "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-9f1431cf-0177-4417-96b4-7918d5e28e88"
         },
         {
-          "@id": "kb:relationship-action-source-1bd5e1b4-f8b1-4960-b85a-f2b249e064c9"
-        },
-        {
-          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-3f3c8387-7c3d-40e6-bc2d-d6f4f360fea4"
-        },
-        {
-          "@id": "kb:relationship-action-file-0-dc021fbd-8a30-42b3-af7a-467a980a5d57"
-        },
-        {
-          "@id": "kb:file-0-25206b82-b31e-4705-88fe-ffcfce0b106f"
+          "@id": "kb:file-0-585549ed-309c-45ee-a8c5-fb42d59a2191"
         }
       ]
     },
     {
-      "@id": "kb:org-nist-59c6f0a5-a168-424d-bc0c-6315b0894734",
+      "@id": "kb:tool-nsrl-to-uco-fcd8e82f-2277-439a-a340-f124b5f0e9f5",
+      "@type": "uco-tool:ConfiguredTool",
+      "uco-core:name": "nsrl_to_uco.py",
+      "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
+      "uco-core:objectCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-01-07T03:00:13.744413Z"
+      }
+    },
+    {
+      "@id": "kb:org-nist-de558c84-bec3-407c-92fb-e55b9eade63d",
       "@type": "uco-identity:Organization",
       "uco-core:name": "National Institute of Standards and Technology",
       "uco-core:description": "NIST maintains the NSRL CAID repository"
     },
     {
-      "@id": "kb:source-nsrl-caid-a3f05e85-6a83-4a82-9943-3dbffe0c74ce",
+      "@id": "kb:source-nsrl-caid-65964ddd-ff33-413a-8e4a-814cd5abe532",
       "@type": "uco-observable:URL",
       "uco-core:name": "NSRL CAID Repository",
       "uco-core:description": "National Software Reference Library - Comprehensive Application Identifier",
       "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
     },
     {
-      "@id": "kb:tool-nsrl-to-uco-45cbdca2-e7a6-4aca-902d-a6301162458a",
-      "@type": "uco-tool:ConfiguredTool",
-      "uco-core:name": "nsrl_to_uco.py",
-      "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      }
-    },
-    {
-      "@id": "kb:facet-python-env-50844475-846f-4d9c-bb51-97a39b657699",
-      "@type": "uco-observable:EnvironmentFacet",
-      "uco-core:name": "Python Environment",
-      "uco-core:description": "Python 3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]"
-    },
-    {
-      "@id": "kb:environment-python-1a104f36-f8d6-4082-956e-12b38895642f",
+      "@id": "kb:environment-python-b859776a-4dc3-4822-a6fa-21e9abf06cb5",
       "@type": "uco-observable:ObservableObject",
       "uco-core:name": "Python Environment",
+      "uco-core:description": "Python 3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      },
-      "uco-core:hasFacet": [
-        {
-          "@id": "kb:facet-python-env-50844475-846f-4d9c-bb51-97a39b657699"
-        }
-      ]
-    },
-    {
-      "@id": "kb:action-conversion-315bec33-05bf-4eac-81a0-e1cca3b104fa",
-      "@type": "uco-action:Action",
-      "uco-core:name": "NSRL CAID to UCO Conversion",
-      "uco-core:description": "Conversion of NSRL CAID data to UCO format",
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      },
-      "uco-action:startTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      },
-      "uco-action:endTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      },
-      "uco-action:performer": {
-        "@id": "kb:tool-nsrl-to-uco-45cbdca2-e7a6-4aca-902d-a6301162458a"
-      },
-      "uco-action:environment": {
-        "@id": "kb:environment-python-1a104f36-f8d6-4082-956e-12b38895642f"
+        "@value": "2025-01-07T03:00:13.744413Z"
       }
     },
     {
-      "@id": "kb:relationship-source-maintainer-121786fb-8ce7-4dc4-b6b0-8a2a2edf6c36",
-      "@type": "uco-core:Relationship",
-      "uco-core:source": {
-        "@id": "kb:source-nsrl-caid-a3f05e85-6a83-4a82-9943-3dbffe0c74ce"
-      },
-      "uco-core:target": {
-        "@id": "kb:org-nist-59c6f0a5-a168-424d-bc0c-6315b0894734"
-      },
-      "uco-core:kindOfRelationship": "maintainedBy",
-      "uco-core:isDirectional": true,
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      }
-    },
-    {
-      "@id": "kb:relationship-action-source-1bd5e1b4-f8b1-4960-b85a-f2b249e064c9",
-      "@type": "uco-core:Relationship",
-      "uco-core:source": {
-        "@id": "kb:action-conversion-315bec33-05bf-4eac-81a0-e1cca3b104fa"
-      },
-      "uco-core:target": {
-        "@id": "kb:source-nsrl-caid-a3f05e85-6a83-4a82-9943-3dbffe0c74ce"
-      },
-      "uco-core:kindOfRelationship": "inputSource",
-      "uco-core:isDirectional": true,
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
-      }
-    },
-    {
-      "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-fa8b3d8f-9ad0-4263-90fb-f79b389aa48c",
-      "@type": "uco-observable:FileFacet",
-      "uco-observable:fileName": "build2.art",
-      "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
-      "uco-observable:hash": [
-        {
-          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-3f3c8387-7c3d-40e6-bc2d-d6f4f360fea4"
-        }
-      ]
-    },
-    {
-      "@id": "kb:facet-hash-588cd1c0e48916d8e7403310402d0a68-789bcf1b-e2a2-4f5b-b4ea-6d972ee27f71",
-      "@type": "uco-types:HashFacet",
+      "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-4436d12f-ad01-4eda-bec9-8297a165ad1c",
+      "@type": "uco-types:Hash",
       "uco-types:hashMethod": {
         "@type": "uco-vocabulary:HashNameVocab",
         "@value": "MD5"
@@ -176,44 +90,43 @@
       }
     },
     {
-      "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-3f3c8387-7c3d-40e6-bc2d-d6f4f360fea4",
+      "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-9f1431cf-0177-4417-96b4-7918d5e28e88",
       "@type": "uco-types:Hash",
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
+      "uco-types:hashMethod": {
+        "@type": "uco-vocabulary:HashNameVocab",
+        "@value": "SHA1"
       },
-      "uco-core:hasFacet": [
-        {
-          "@id": "kb:facet-hash-588cd1c0e48916d8e7403310402d0a68-789bcf1b-e2a2-4f5b-b4ea-6d972ee27f71"
-        }
-      ]
-    },
-    {
-      "@id": "kb:relationship-action-file-0-dc021fbd-8a30-42b3-af7a-467a980a5d57",
-      "@type": "uco-core:Relationship",
-      "uco-core:source": {
-        "@id": "kb:action-conversion-315bec33-05bf-4eac-81a0-e1cca3b104fa"
-      },
-      "uco-core:target": {
-        "@id": "kb:file-0-25206b82-b31e-4705-88fe-ffcfce0b106f"
-      },
-      "uco-core:kindOfRelationship": "outputFile",
-      "uco-core:isDirectional": true,
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
+      "uco-types:hashValue": {
+        "@type": "xsd:hexBinary",
+        "@value": "E65706B487C73E992BAB2A50707A9FD8B0BD6866"
       }
     },
     {
-      "@id": "kb:file-0-25206b82-b31e-4705-88fe-ffcfce0b106f",
+      "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-72f2d9a8-d560-41a3-882b-c411c5a74897",
+      "@type": "uco-observable:FileFacet",
+      "uco-observable:fileName": "build2.art",
+      "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
+      "uco-observable:hash": [
+        {
+          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-4436d12f-ad01-4eda-bec9-8297a165ad1c"
+        },
+        {
+          "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-9f1431cf-0177-4417-96b4-7918d5e28e88"
+        }
+      ],
+      "uco-observable:isDirectory": false,
+      "uco-observable:sizeInBytes": 488
+    },
+    {
+      "@id": "kb:file-0-585549ed-309c-45ee-a8c5-fb42d59a2191",
       "@type": "uco-observable:File",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T02:56:17.062904Z"
+        "@value": "2025-01-07T03:00:13.744413Z"
       },
       "uco-core:hasFacet": [
         {
-          "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-fa8b3d8f-9ad0-4263-90fb-f79b389aa48c"
+          "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-72f2d9a8-d560-41a3-882b-c411c5a74897"
         }
       ]
     }
