@@ -227,7 +227,13 @@ class NSRLConverter:
         
         return {
             "@id": hash_id,
-            "@type": "uco-types:Hash",
+            "@type": ["uco-types:Hash", "uco-core:UcoObject"],
+            "uco-core:objectCreatedTime": {
+                "@type": "xsd:dateTime",
+                "@value": current_time
+            },
+            "uco-core:tag": [hash_method],
+            "uco-core:description": f"{hash_method} hash value for file",
             "uco-types:hashMethod": {
                 "@type": "uco-vocabulary:HashNameVocab",
                 "@value": hash_method
@@ -235,10 +241,6 @@ class NSRLConverter:
             "uco-types:hashValue": {
                 "@type": "xsd:hexBinary",
                 "@value": hash_value.upper()
-            },
-            "uco-core:objectCreatedTime": {
-                "@type": "xsd:dateTime",
-                "@value": current_time
             }
         }
 
@@ -359,7 +361,7 @@ class NSRLConverter:
             bundle_id = self.create_identifier("bundle", "nsrl-caid")
             bundle = {
                 "@id": bundle_id,
-                "@type": "uco-core:Bundle",
+                "@type": ["uco-core:Bundle", "uco-core:UcoObject"],
                 "uco-core:description": "NSRL CAID media file reference data converted to UCO format",
                 "uco-core:objectCreatedTime": {
                     "@type": "xsd:dateTime",
@@ -373,7 +375,7 @@ class NSRLConverter:
             tool_id = self.create_identifier("tool", "nsrl-to-uco")
             tool = {
                 "@id": tool_id,
-                "@type": "uco-tool:ConfiguredTool",
+                "@type": ["uco-tool:ConfiguredTool", "uco-core:UcoObject"],
                 "uco-core:name": "nsrl_to_uco.py",
                 "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
                 "uco-core:objectCreatedTime": {
@@ -387,9 +389,13 @@ class NSRLConverter:
             org_id = self.create_identifier("org", "nist")
             org = {
                 "@id": org_id,
-                "@type": "uco-identity:Organization",
+                "@type": ["uco-identity:Organization", "uco-core:UcoObject"],
                 "uco-core:name": "National Institute of Standards and Technology",
-                "uco-core:description": "NIST maintains the NSRL CAID repository"
+                "uco-core:description": "NIST maintains the NSRL CAID repository",
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                }
             }
             objects.append(org)
 
@@ -397,9 +403,13 @@ class NSRLConverter:
             source_id = self.create_identifier("source", "nsrl-caid")
             source = {
                 "@id": source_id,
-                "@type": "uco-observable:URL",
+                "@type": ["uco-observable:URL", "uco-core:UcoObject"],
                 "uco-core:name": "NSRL CAID Repository",
                 "uco-core:description": "National Software Reference Library - Comprehensive Application Identifier",
+                "uco-core:objectCreatedTime": {
+                    "@type": "xsd:dateTime",
+                    "@value": current_time
+                },
                 "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
             }
             objects.append(source)
@@ -408,7 +418,7 @@ class NSRLConverter:
             env_id = self.create_identifier("environment", "python")
             env = {
                 "@id": env_id,
-                "@type": "uco-observable:ObservableObject",
+                "@type": ["uco-observable:ObservableObject", "uco-core:UcoObject"],
                 "uco-core:name": "Python Environment",
                 "uco-core:description": f"Python {sys.version}",
                 "uco-core:objectCreatedTime": {
@@ -426,7 +436,7 @@ class NSRLConverter:
                 # Create file object
                 file_obj = {
                     "@id": file_id,
-                    "@type": "uco-observable:File",
+                    "@type": ["uco-observable:File", "uco-core:UcoObject"],
                     "uco-core:objectCreatedTime": {
                         "@type": "xsd:dateTime",
                         "@value": current_time
@@ -440,35 +450,13 @@ class NSRLConverter:
                     
                     if "MD5" in media_file:
                         hash_id = self.create_identifier("hash", media_file["MD5"])
-                        hash_obj = {
-                            "@id": hash_id,
-                            "@type": "uco-types:Hash",
-                            "uco-types:hashMethod": {
-                                "@type": "uco-vocabulary:HashNameVocab",
-                                "@value": "MD5"
-                            },
-                            "uco-types:hashValue": {
-                                "@type": "xsd:hexBinary",
-                                "@value": media_file["MD5"].upper()
-                            }
-                        }
+                        hash_obj = self._create_hash_object(media_file["MD5"], "MD5")
                         hash_objects.append(hash_obj)
                         objects.append(hash_obj)
 
                     if "SHA1" in media:
                         hash_id = self.create_identifier("hash", media["SHA1"])
-                        hash_obj = {
-                            "@id": hash_id,
-                            "@type": "uco-types:Hash",
-                            "uco-types:hashMethod": {
-                                "@type": "uco-vocabulary:HashNameVocab",
-                                "@value": "SHA1"
-                            },
-                            "uco-types:hashValue": {
-                                "@type": "xsd:hexBinary",
-                                "@value": media["SHA1"].upper()
-                            }
-                        }
+                        hash_obj = self._create_hash_object(media["SHA1"], "SHA1")
                         hash_objects.append(hash_obj)
                         objects.append(hash_obj)
 
@@ -498,14 +486,7 @@ class NSRLConverter:
             # Add all UcoObjects to the bundle's object list
             bundle["uco-core:object"] = [
                 {"@id": obj["@id"]} for obj in objects 
-                if obj["@type"] in [
-                    "uco-tool:ConfiguredTool",
-                    "uco-identity:Organization",
-                    "uco-observable:URL",
-                    "uco-observable:ObservableObject",
-                    "uco-observable:File",
-                    "uco-types:Hash"
-                ]
+                if "uco-core:UcoObject" in obj.get("@type", [])
             ]
 
             # Create the UCO object
