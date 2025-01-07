@@ -204,6 +204,44 @@ class NSRLConverter:
         
         return bundle
 
+    def _create_environment_object(self) -> Dict:
+        """Create environment object with proper facet."""
+        current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
+        env_id = f"kb:environment-python-{uuid.uuid4()}"
+        
+        return {
+            "@id": env_id,
+            "@type": "uco-observable:ObservableObject",
+            "uco-core:name": "Python Environment",
+            "uco-core:objectCreatedTime": {
+                "@type": "xsd:dateTime",
+                "@value": current_time
+            },
+            "uco-core:description": f"Python {sys.version}"
+        }
+
+    def _create_hash_object(self, hash_value: str, hash_method: str) -> Dict:
+        """Create hash object with proper properties."""
+        current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
+        hash_id = f"kb:hash-{hash_value.lower()}-{uuid.uuid4()}"
+        
+        return {
+            "@id": hash_id,
+            "@type": "uco-types:Hash",
+            "uco-types:hashMethod": {
+                "@type": "uco-vocabulary:HashNameVocab",
+                "@value": hash_method
+            },
+            "uco-types:hashValue": {
+                "@type": "xsd:hexBinary",
+                "@value": hash_value.upper()
+            },
+            "uco-core:objectCreatedTime": {
+                "@type": "xsd:dateTime",
+                "@value": current_time
+            }
+        }
+
     def _create_file_facet(self, media_file: MediaFile, media: Dict, facet_id: str) -> FileFacet:
         """Create UCO FileFacet from NSRL MediaFile and parent Media object."""
         current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
@@ -211,35 +249,13 @@ class NSRLConverter:
         
         # Add MD5 hash from MediaFile
         if "MD5" in media_file:
-            hash_id = f"kb:hash-{uuid.uuid4()}"
-            hashes.append({
-                "@id": hash_id,
-                "@type": "uco-types:Hash",
-                "uco-types:hashMethod": {
-                    "@type": "uco-vocabulary:HashNameVocab",
-                    "@value": "MD5"
-                },
-                "uco-types:hashValue": {
-                    "@type": "xsd:hexBinary",
-                    "@value": media_file["MD5"]
-                }
-            })
+            hash_obj = self._create_hash_object(media_file["MD5"], "MD5")
+            hashes.append({"@id": hash_obj["@id"]})
             
         # Add SHA1 hash from parent Media object if present
         if "SHA1" in media:
-            hash_id = f"kb:hash-{uuid.uuid4()}"
-            hashes.append({
-                "@id": hash_id,
-                "@type": "uco-types:Hash",
-                "uco-types:hashMethod": {
-                    "@type": "uco-vocabulary:HashNameVocab",
-                    "@value": "SHA1"
-                },
-                "uco-types:hashValue": {
-                    "@type": "xsd:hexBinary",
-                    "@value": media["SHA1"]
-                }
-            })
+            hash_obj = self._create_hash_object(media["SHA1"], "SHA1")
+            hashes.append({"@id": hash_obj["@id"]})
             
         # Create facet with all available information
         facet = {
