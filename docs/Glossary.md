@@ -1,7 +1,7 @@
 # NSRL-to-UCO Converter Glossary
 
 ## Introduction
-This glossary defines the primary terms used throughout the NSRL-to-UCO Converter's documentation and implementation. Understanding these terms will help developers navigate the codebase, understand the data transformations, and extend functionality. The converter currently targets UCO 1.3.0; future ontology updates may require changes to the converter and this documentation.
+This glossary defines the primary terms used throughout the NSRL-to-UCO Converter's documentation and implementation. Understanding these terms will help developers navigate the codebase, understand the data transformations, and extend functionality. The converter currently targets UCO 1.4.0; future ontology updates may require changes to the converter and this documentation.
 
 ## Core Concepts
 
@@ -13,7 +13,7 @@ For implementation details, see [Data Model Design Document → Input Data Model
 
 ### UCO (Unified Cyber Ontology)
 A community-developed standard that provides a structured specification for representing cyber investigation information. UCO defines concepts that are used across various cyber investigation domains.
-Reference: https://ontology.unifiedcyberontology.org/uco/uco/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/uco/1.4.0
 
 Example usage in converter output:
 ```json
@@ -29,7 +29,7 @@ Example usage in converter output:
 
 ### Bundle
 A UCO core concept that groups related cyber investigation information together, maintaining context and provenance of the data.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 Example in converter:
 ```json
@@ -43,7 +43,7 @@ See [Data Model Design Document → Bundle Structure] for more details.
 
 ### ConfiguredTool
 A UCO tool type representing a specific instance of a tool with its configuration, metadata, and usage context.
-Reference: https://ontology.unifiedcyberontology.org/uco/tool/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/tool/1.4.0
 
 Used in the converter to represent itself:
 ```json
@@ -56,7 +56,7 @@ Used in the converter to represent itself:
 
 ### Facet
 A UCO core concept that represents specific characteristics, properties, or aspects of an object. Facets are used to describe different views or aspects of the same object.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 Example of a FileFacet in converter output:
 ```json
@@ -81,7 +81,7 @@ Reference: https://www.w3.org/TR/json-ld11/
 
 ### Hash
 A cryptographic representation of digital content, used in UCO for uniquely identifying and verifying the integrity of digital objects. Common hash methods include MD5 and SHA1.
-Reference: https://ontology.unifiedcyberontology.org/uco/types/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/types/1.4.0
 
 Example in converter:
 ```json
@@ -98,7 +98,7 @@ Reference: https://www.w3.org/TR/json-ld11/#iris
 
 ### Provenance
 The record of the origin and history of a piece of data or evidence, tracking its ownership, custody, and transformations over time. In UCO, provenance is captured through relationships like createdBy, derivedFrom, and processed, ensuring transparency and accountability in cyber-investigations.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 Example in converter:
 ```json
@@ -117,18 +117,18 @@ The converter uses these relationships to establish provenance and connections b
 
 ### createdBy
 The identity that created a characterization of a concept. Used in the converter to indicate that the UCO Bundle was created by this tool.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 ### derivedFrom
 Indicates that an object is derived from another object, establishing provenance relationships in cyber investigations. Used to show that UCO output is derived from NSRL CAID input.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 ### managedBy
 Specifies the organization or entity responsible for maintaining or managing a particular resource. Used to indicate NIST's management of the NSRL dataset.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 ### processed
 Indicates that a tool or process has performed operations on specific input data, creating derived outputs. Shows that the converter processed the NSRL CAID input file.
-Reference: https://ontology.unifiedcyberontology.org/uco/core/1.3.0
+Reference: https://ontology.unifiedcyberontology.org/uco/core/1.4.0
 
 See [App Flow Document → Process Flow] for details on how these relationships are created during conversion. 

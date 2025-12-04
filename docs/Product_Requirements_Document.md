@@ -9,7 +9,7 @@ The NSRL-to-UCO Converter is a Python tool developed by the Linux Foundation's C
 - Preserve file hash values and metadata
 - Support provenance tracking of data transformations
 - Enable interoperability with CASE/UCO-compliant forensic tools
-- Ensure compliance with UCO 1.3.0 specification
+- Ensure compliance with UCO 1.4.0 specification
 
 ## Background
 The National Software Reference Library (NSRL), maintained by the National Institute of Standards and Technology (NIST), provides a collection of digital signatures of known files. The NSRL CAID dataset is part of their Non-RDS hash sets, containing file signatures in JSON format. By converting this data to UCO format, it can be integrated into modern digital forensic workflows that use the CASE/UCO standards for representing cyber-investigation information.
@@ -22,7 +22,7 @@ The National Software Reference Library (NSRL), maintained by the National Insti
    - Support batch processing of multiple files
    - Maintain original file relationships and hierarchies
    - Generate consistent and valid JSON-LD output
-   - Ensure compliance with UCO 1.3.0
+   - Ensure compliance with UCO 1.4.0
 
 2. Data Mapping
    - Map NSRL media objects to UCO File objects
@@ -95,12 +95,12 @@ The National Software Reference Library (NSRL), maintained by the National Insti
    - Python 3.9+ support
    - Cross-platform functionality
    - CASE Utilities dependency
-   - UCO 1.3.0 ontology compliance
+   - UCO 1.4.0 ontology compliance
    - Standard library dependencies
 
 ## Constraints and Assumptions
 - Input files follow NSRL CAID JSON/OData format
-- UCO ontology version 1.3.0 compatibility
+- UCO ontology version 1.4.0 compatibility
 - Python 3.9+ environment availability
 - CASE Utilities installation
 - File system access permissions
@@ -158,7 +158,7 @@ The National Software Reference Library (NSRL), maintained by the National Insti
 - Input files can be multiple gigabytes
 - Memory usage must be managed for large files
 - Python 3.9+ environment required
-- UCO ontology version 1.3.0 compatibility
+- UCO ontology version 1.4.0 compatibility
 - CASE Utilities dependency
 
 ### Known Risks
