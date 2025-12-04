@@ -9,8 +9,8 @@ with appropriate facets and relationships.
 Copyright: Linux Foundation Cyber Domain Ontology Project
 License: Apache 2.0
 Author: Cyber Domain Ontology Developers: @vulnmaster
-Version: 1.0.0
-UCO Version: 1.3.0
+Version: 1.1.0
+UCO Version: 1.4.0
 Ontology Compliance: UCO Core, Observable, and Types
 """
 
@@ -37,6 +37,7 @@ import logging.handlers
 import os
 from pathlib import Path
 import uuid
+import subprocess
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set, Union, TypedDict
 
@@ -89,6 +90,7 @@ class NSRLConverter:
     output_dir: str = "output"
     log_file: Optional[str] = None
     combine: bool = False
+    validate: bool = False
     processed_files: Set[str] = field(default_factory=set)
     uuids: Dict[str, str] = field(default_factory=dict)
     logger: logging.Logger = field(init=False)
@@ -136,7 +138,7 @@ class NSRLConverter:
                 "uco-core:objectCreatedTime": current_time,
                 "uco-core:startTime": current_time,
                 "uco-core:endTime": current_time,
-                "uco-core:specVersion": "1.3.0"
+                "uco-core:specVersion": "1.4.0"
             },
             "organization": {
                 "@id": "kb:org-nist",
@@ -185,7 +187,7 @@ class NSRLConverter:
                     "@type": "xsd:dateTime",
                     "@value": current_time
                 },
-                "uco-core:specVersion": "1.3.0"
+                "uco-core:specVersion": "1.4.0"
             },
             {
                 "@id": f"kb:relationship-{uuid.uuid4()}",
@@ -198,7 +200,7 @@ class NSRLConverter:
                     "@type": "xsd:dateTime",
                     "@value": current_time
                 },
-                "uco-core:specVersion": "1.3.0"
+                "uco-core:specVersion": "1.4.0"
             }
         ])
         
@@ -227,39 +229,22 @@ class NSRLConverter:
         
         return {
             "@id": hash_id,
-            "@type": ["uco-types:Hash", "uco-core:UcoObject"],
-            "uco-core:objectCreatedTime": {
-                "@type": "xsd:dateTime",
-                "@value": current_time
-            },
+            "@type": "uco-types:Hash",
             "uco-core:tag": [hash_method],
             "uco-core:description": f"{hash_method} hash value for file",
-            "uco-types:hashMethod": {
-                "@type": "uco-vocabulary:HashNameVocab",
-                "@value": hash_method
-            },
+            "uco-types:hashMethod": hash_method,
             "uco-types:hashValue": {
                 "@type": "xsd:hexBinary",
                 "@value": hash_value.upper()
             }
         }
 
-    def _create_file_facet(self, media_file: MediaFile, media: Dict, facet_id: str) -> FileFacet:
-        """Create UCO FileFacet from NSRL MediaFile and parent Media object."""
+    def _create_file_facet(self, media_file: MediaFile, facet_id: str) -> FileFacet:
+        """Create UCO FileFacet from NSRL MediaFile."""
         current_time = self._format_datetime(datetime.datetime.now(timezone.utc))
-        hashes = []
         
-        # Add MD5 hash from MediaFile
-        if "MD5" in media_file:
-            hash_obj = self._create_hash_object(media_file["MD5"], "MD5")
-            hashes.append({"@id": hash_obj["@id"]})
-            
-        # Add SHA1 hash from parent Media object if present
-        if "SHA1" in media:
-            hash_obj = self._create_hash_object(media["SHA1"], "SHA1")
-            hashes.append({"@id": hash_obj["@id"]})
-            
-        # Create facet with all available information
+        # Create facet with available information
+        # Note: Hashes and size are now in ContentDataFacet
         facet = {
             "@id": facet_id,
             "@type": "uco-observable:FileFacet",
@@ -267,7 +252,6 @@ class NSRLConverter:
             "uco-observable:filePath": media_file["FilePath"],
             "uco-observable:extension": os.path.splitext(media_file["FileName"])[1][1:] if "." in media_file["FileName"] else "",
             "uco-observable:isDirectory": False,
-            "uco-observable:hash": hashes,
             "uco-observable:observableCreatedTime": {
                 "@type": "xsd:dateTime",
                 "@value": current_time
@@ -282,24 +266,15 @@ class NSRLConverter:
             }
         }
         
-        # Add size if available
-        if "MediaSize" in media:
-            try:
-                facet["uco-observable:sizeInBytes"] = int(media["MediaSize"])
-            except ValueError:
-                self.logger.warning(f"Invalid MediaSize value: {media['MediaSize']}")
-                
         return facet
 
-    def _create_content_data_facet(self, media_file: MediaFile, media: Dict, facet_id: str) -> Dict:
+    def _create_content_data_facet(self, media_file: MediaFile, media: Dict, facet_id: str, hashes: List[Dict]) -> Dict:
         """Create ContentDataFacet for additional file metadata."""
         facet = {
             "@id": facet_id,
             "@type": "uco-observable:ContentDataFacet",
-            "uco-observable:byteOrder": {
-                "@type": "uco-vocabulary:EndiannessTypeVocab",
-                "@value": "Big-endian"
-            }
+            "uco-observable:byteOrder": "Big-endian",
+            "uco-observable:hash": hashes
         }
         
         # Add MIME type based on file extension
@@ -340,6 +315,26 @@ class NSRLConverter:
         uuid_str = self.get_uuid_for_id(prefix, id_str)
         return f"kb:{prefix}-{id_str}-{uuid_str}"
 
+    def validate_file(self, file_path: Path) -> None:
+        """Validate output file using case_validate."""
+        try:
+            cmd = ["case_validate", "--built-version", "case-1.4.0", str(file_path)]
+            if self.logger.level == logging.DEBUG:
+                cmd.append("--debug")
+            
+            self.logger.info(f"Validating {file_path}...")
+            # Use shell=False for security, but make sure case_validate is in path
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                self.logger.info("Validation successful")
+            else:
+                self.logger.error("Validation failed")
+                self.logger.error(result.stderr)
+                self.logger.error(result.stdout)
+        except Exception as e:
+            self.logger.error(f"Validation error: {e}")
+
     def process_file(self, input_file: Path) -> Optional[Dict]:
         """Process single NSRL CAID JSON file to UCO format."""
         try:
@@ -356,6 +351,12 @@ class NSRLConverter:
 
             current_time = get_current_time()
             objects = []  # List to store all objects
+            added_ids = set() # Track added object IDs
+
+            def add_object(obj):
+                if obj["@id"] not in added_ids:
+                    objects.append(obj)
+                    added_ids.add(obj["@id"])
 
             # Create bundle
             bundle_id = self.create_identifier("bundle", "nsrl-caid")
@@ -369,7 +370,7 @@ class NSRLConverter:
                 },
                 "uco-core:object": []  # Will be populated later
             }
-            objects.append(bundle)
+            add_object(bundle)
 
             # Create tool object
             tool_id = self.create_identifier("tool", "nsrl-to-uco")
@@ -383,7 +384,7 @@ class NSRLConverter:
                     "@value": current_time
                 }
             }
-            objects.append(tool)
+            add_object(tool)
 
             # Create organization object
             org_id = self.create_identifier("org", "nist")
@@ -397,7 +398,7 @@ class NSRLConverter:
                     "@value": current_time
                 }
             }
-            objects.append(org)
+            add_object(org)
 
             # Create source object
             source_id = self.create_identifier("source", "nsrl-caid")
@@ -412,7 +413,7 @@ class NSRLConverter:
                 },
                 "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
             }
-            objects.append(source)
+            add_object(source)
 
             # Create environment object
             env_id = self.create_identifier("environment", "python")
@@ -426,67 +427,63 @@ class NSRLConverter:
                     "@value": current_time
                 }
             }
-            objects.append(env)
+            add_object(env)
 
             # Process each media item
             for media in media_list:
                 media_id = media.get("MediaID", "unknown")
-                file_id = self.create_identifier("file", str(media_id))
-
-                # Create file object
-                file_obj = {
-                    "@id": file_id,
-                    "@type": ["uco-observable:File", "uco-core:UcoObject"],
-                    "uco-core:objectCreatedTime": {
-                        "@type": "xsd:dateTime",
-                        "@value": current_time
-                    }
-                }
-
+                
                 # Process each media file
                 for media_file in media.get("MediaFiles", []):
-                    # Create hash objects
-                    hash_objects = []
-                    
-                    if "MD5" in media_file:
-                        hash_id = self.create_identifier("hash", media_file["MD5"])
-                        hash_obj = self._create_hash_object(media_file["MD5"], "MD5")
-                        hash_objects.append(hash_obj)
-                        objects.append(hash_obj)
+                    # Use composite ID for file: MediaID + FileName (or MD5 of name if needed)
+                    # Using hash of file name to ensure valid ID char range
+                    safe_name = hashlib.md5(media_file.get("FileName", "").encode()).hexdigest()
+                    file_uuid = self.get_uuid_for_id("file", f"{media_id}-{safe_name}")
+                    file_id = f"kb:file-{file_uuid}"
 
-                    if "SHA1" in media:
-                        hash_id = self.create_identifier("hash", media["SHA1"])
-                        hash_obj = self._create_hash_object(media["SHA1"], "SHA1")
-                        hash_objects.append(hash_obj)
-                        objects.append(hash_obj)
-
-                    # Create file facet
-                    facet_id = self.create_identifier("facet", f"{media_id}-{media_file.get('MD5', 'unknown')}")
-                    file_facet = {
-                        "@id": facet_id,
-                        "@type": "uco-observable:FileFacet",
-                        "uco-observable:fileName": media_file.get("FileName", ""),
-                        "uco-observable:filePath": media_file.get("FilePath", ""),
-                        "uco-observable:hash": [{"@id": h["@id"]} for h in hash_objects],
-                        "uco-observable:isDirectory": False
+                    # Create file object
+                    file_obj = {
+                        "@id": file_id,
+                        "@type": ["uco-observable:File", "uco-core:UcoObject"],
+                        "uco-core:objectCreatedTime": {
+                            "@type": "xsd:dateTime",
+                            "@value": current_time
+                        }
                     }
 
-                    # Add size if available
-                    if "MediaSize" in media:
-                        try:
-                            file_facet["uco-observable:sizeInBytes"] = int(media["MediaSize"])
-                        except ValueError:
-                            self.logger.warning(f"Invalid MediaSize value: {media['MediaSize']}")
+                    # Create hash objects and collection
+                    hash_refs = []
+                    
+                    if "MD5" in media_file:
+                        hash_val = media_file["MD5"]
+                        hash_obj = self._create_hash_object(hash_val, "MD5")
+                        add_object(hash_obj)
+                        hash_refs.append({"@id": hash_obj["@id"]})
 
-                    file_obj["uco-core:hasFacet"] = [{"@id": facet_id}]
-                    objects.append(file_facet)
+                    if "SHA1" in media:
+                        hash_val = media["SHA1"]
+                        hash_obj = self._create_hash_object(hash_val, "SHA1")
+                        add_object(hash_obj)
+                        hash_refs.append({"@id": hash_obj["@id"]})
 
-                objects.append(file_obj)
+                    # Create ContentDataFacet (with hashes)
+                    cdf_id = self.create_identifier("facet-content", f"{media_id}-{safe_name}")
+                    cdf = self._create_content_data_facet(media_file, media, cdf_id, hash_refs)
+                    
+                    # Create FileFacet (no hashes)
+                    ff_id = self.create_identifier("facet-file", f"{media_id}-{safe_name}")
+                    ff = self._create_file_facet(media_file, ff_id)
+
+                    file_obj["uco-core:hasFacet"] = [{"@id": cdf_id}, {"@id": ff_id}]
+                    
+                    add_object(file_obj)
+                    add_object(cdf) 
+                    add_object(ff)
 
             # Add all UcoObjects to the bundle's object list
             bundle["uco-core:object"] = [
                 {"@id": obj["@id"]} for obj in objects 
-                if "uco-core:UcoObject" in obj.get("@type", [])
+                if "uco-core:UcoObject" in obj.get("@type", []) and obj["@id"] != bundle_id
             ]
 
             # Create the UCO object
@@ -512,10 +509,15 @@ class NSRLConverter:
                 json.dump(uco_object, f, indent=2)
             self.logger.info(f"Wrote output to {output_file}")
 
+            if self.validate:
+                self.validate_file(output_file)
+
             return uco_object
 
         except Exception as e:
             self.logger.error(f"Error processing file {input_file}: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return None
 
     def process_input(self) -> None:
@@ -616,7 +618,8 @@ def main() -> None:
         input_path=args.input,
         output_dir=args.output,
         log_file=args.log_file,
-        combine=args.combine
+        combine=args.combine,
+        validate=args.validate
     )
     converter.process_input()
 

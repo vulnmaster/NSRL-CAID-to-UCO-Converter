@@ -124,7 +124,7 @@ graph TD
 
 3. Output Validation
    - JSON-LD structure validation
-   - UCO ontology compliance check (CASE 1.3.0)
+127|   - UCO ontology compliance check (CASE 1.4.0)
    - Relationship integrity verification
    - CASE validation using CASE Utilities
    - Timestamp format verification

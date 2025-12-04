@@ -57,31 +57,35 @@
 
 ### File Object
 ```json
-{
-  "@id": "kb:media-uuid",
-  "@type": "uco-observable:File",
-  "uco-observable:categories": "category",
-  "uco-core:hasFacet": [
     {
-      "@type": "uco-observable:FileFacet",
-      "uco-observable:fileName": "name",
-      "uco-observable:filePath": "path",
-      "uco-observable:hash": [
+      "@id": "kb:media-uuid",
+      "@type": "uco-observable:File",
+      "uco-observable:categories": "category",
+      "uco-core:hasFacet": [
         {
-          "@type": "uco-types:Hash",
-          "uco-types:hashMethod": {
-            "@type": "uco-vocabulary:HashNameVocab",
-            "@value": "MD5"
-          },
-          "uco-types:hashValue": {
-            "@type": "xsd:hexBinary",
-            "@value": "588cd1c0e48916d8e7403310402d0a68"
-          }
+          "@type": "uco-observable:ContentDataFacet",
+          "uco-observable:sizeInBytes": 1234,
+          "uco-observable:hash": [
+            {
+              "@type": "uco-types:Hash",
+              "uco-types:hashMethod": {
+                "@type": "uco-vocabulary:HashNameVocab",
+                "@value": "MD5"
+              },
+              "uco-types:hashValue": {
+                "@type": "xsd:hexBinary",
+                "@value": "588cd1c0e48916d8e7403310402d0a68"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "uco-observable:FileFacet",
+          "uco-observable:fileName": "name",
+          "uco-observable:filePath": "path"
         }
       ]
     }
-  ]
-}
 ```
 
 ### Tool Object
@@ -112,11 +116,14 @@
    - MD5 → uco-types:Hash with xsd:hexBinary value
    - SHA1 → uco-types:Hash with xsd:hexBinary value
 
-2. File Properties
+2. File Properties (FileFacet)
    - FileName → uco-observable:fileName
    - FilePath → uco-observable:filePath
-   - MediaSize → uco-observable:sizeInBytes
    - Category → uco-observable:categories
+
+3. Content Properties (ContentDataFacet)
+   - MediaSize → uco-observable:sizeInBytes
+   - Hashes → uco-observable:hash
 
 ### Relationship Mappings
 1. Tool Relationships
@@ -143,7 +150,7 @@
 ### Output Validation
 1. Schema Compliance
    - Valid JSON-LD
-   - UCO ontology compliance (CASE 1.3.0)
+146|   - UCO ontology compliance (CASE 1.4.0)
    - Required properties present
 
 2. Relationship Integrity
@@ -194,10 +201,8 @@
           "uco-observable:categories": 8,
           "uco-core:hasFacet": [
             {
-              "@type": "uco-observable:FileFacet",
+              "@type": "uco-observable:ContentDataFacet",
               "uco-observable:sizeInBytes": 488,
-              "uco-observable:fileName": "build2.art",
-              "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
               "uco-observable:hash": [
                 {
                   "@type": "uco-types:Hash",
@@ -222,6 +227,11 @@
                   }
                 }
               ]
+            },
+            {
+              "@type": "uco-observable:FileFacet",
+              "uco-observable:fileName": "build2.art",
+              "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan"
             }
           ]
         }

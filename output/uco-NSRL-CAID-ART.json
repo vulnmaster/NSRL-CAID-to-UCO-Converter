@@ -13,7 +13,7 @@
   },
   "@graph": [
     {
-      "@id": "kb:bundle-nsrl-caid-507a0681-35e0-48ff-977e-6899699c5de1",
+      "@id": "kb:bundle-nsrl-caid-4d3e68f5-1007-4973-8383-7231ef907567",
       "@type": [
         "uco-core:Bundle",
         "uco-core:UcoObject"
@@ -21,37 +21,28 @@
       "uco-core:description": "NSRL CAID media file reference data converted to UCO format",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140126Z"
+        "@value": "2025-12-04T04:55:55.762696Z"
       },
       "uco-core:object": [
         {
-          "@id": "kb:bundle-nsrl-caid-507a0681-35e0-48ff-977e-6899699c5de1"
+          "@id": "kb:tool-nsrl-to-uco-0b0bde2e-f74b-4e21-95cd-be1ae8074f11"
         },
         {
-          "@id": "kb:tool-nsrl-to-uco-33c5334d-6519-4e52-b711-574cb06a3c0b"
+          "@id": "kb:org-nist-d55b86cb-d3b8-433e-9527-8f1aba578581"
         },
         {
-          "@id": "kb:org-nist-01723919-c4d3-4c7b-919b-c29b56adb0db"
+          "@id": "kb:source-nsrl-caid-f7519660-8866-4846-8428-f0738e1622b8"
         },
         {
-          "@id": "kb:source-nsrl-caid-7bca4fd7-0395-4b62-bb8f-e940e9e2345c"
+          "@id": "kb:environment-python-073dea9f-667b-4e08-8619-28dee7c55db1"
         },
         {
-          "@id": "kb:environment-python-a4e247a0-3345-4364-892c-004a227f17f1"
-        },
-        {
-          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-40538fc5-49ce-4f46-a44b-99e4a6db5830"
-        },
-        {
-          "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-650758e1-790b-44a5-9a23-44d6087d0b3b"
-        },
-        {
-          "@id": "kb:file-0-9165d0d4-e18a-4b3b-9d30-46d4da2c789a"
+          "@id": "kb:file-0918dc9e-9007-4bb9-8edf-f4b0734deca7"
         }
       ]
     },
     {
-      "@id": "kb:tool-nsrl-to-uco-33c5334d-6519-4e52-b711-574cb06a3c0b",
+      "@id": "kb:tool-nsrl-to-uco-0b0bde2e-f74b-4e21-95cd-be1ae8074f11",
       "@type": [
         "uco-tool:ConfiguredTool",
         "uco-core:UcoObject"
@@ -60,11 +51,11 @@
       "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140126Z"
+        "@value": "2025-12-04T04:55:55.762696Z"
       }
     },
     {
-      "@id": "kb:org-nist-01723919-c4d3-4c7b-919b-c29b56adb0db",
+      "@id": "kb:org-nist-d55b86cb-d3b8-433e-9527-8f1aba578581",
       "@type": [
         "uco-identity:Organization",
         "uco-core:UcoObject"
@@ -73,11 +64,11 @@
       "uco-core:description": "NIST maintains the NSRL CAID repository",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140126Z"
+        "@value": "2025-12-04T04:55:55.762696Z"
       }
     },
     {
-      "@id": "kb:source-nsrl-caid-7bca4fd7-0395-4b62-bb8f-e940e9e2345c",
+      "@id": "kb:source-nsrl-caid-f7519660-8866-4846-8428-f0738e1622b8",
       "@type": [
         "uco-observable:URL",
         "uco-core:UcoObject"
@@ -86,100 +77,101 @@
       "uco-core:description": "National Software Reference Library - Comprehensive Application Identifier",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140126Z"
+        "@value": "2025-12-04T04:55:55.762696Z"
       },
       "uco-observable:value": "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/CAID/current/NSRL-CAID-JSONs.zip"
     },
     {
-      "@id": "kb:environment-python-a4e247a0-3345-4364-892c-004a227f17f1",
+      "@id": "kb:environment-python-073dea9f-667b-4e08-8619-28dee7c55db1",
       "@type": [
         "uco-observable:ObservableObject",
         "uco-core:UcoObject"
       ],
       "uco-core:name": "Python Environment",
-      "uco-core:description": "Python 3.8.10 (tags/v3.8.10:3d8993a, May  3 2021, 11:48:03) [MSC v.1928 64 bit (AMD64)]",
+      "uco-core:description": "Python 3.12.3 (main, Nov  6 2025, 13:44:16) [GCC 13.3.0]",
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140126Z"
+        "@value": "2025-12-04T04:55:55.762696Z"
       }
     },
     {
-      "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-40538fc5-49ce-4f46-a44b-99e4a6db5830",
-      "@type": [
-        "uco-types:Hash",
-        "uco-core:UcoObject"
-      ],
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140Z"
-      },
+      "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-0c4e9b1a-837c-43dc-9fd3-04f7614bec5f",
+      "@type": "uco-types:Hash",
       "uco-core:tag": [
         "MD5"
       ],
       "uco-core:description": "MD5 hash value for file",
-      "uco-types:hashMethod": {
-        "@type": "uco-vocabulary:HashNameVocab",
-        "@value": "MD5"
-      },
+      "uco-types:hashMethod": "MD5",
       "uco-types:hashValue": {
         "@type": "xsd:hexBinary",
         "@value": "588CD1C0E48916D8E7403310402D0A68"
       }
     },
     {
-      "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-650758e1-790b-44a5-9a23-44d6087d0b3b",
-      "@type": [
-        "uco-types:Hash",
-        "uco-core:UcoObject"
-      ],
-      "uco-core:objectCreatedTime": {
-        "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140Z"
-      },
+      "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-6e7b596f-e283-41ec-bb7e-faa1483bf622",
+      "@type": "uco-types:Hash",
       "uco-core:tag": [
         "SHA1"
       ],
       "uco-core:description": "SHA1 hash value for file",
-      "uco-types:hashMethod": {
-        "@type": "uco-vocabulary:HashNameVocab",
-        "@value": "SHA1"
-      },
+      "uco-types:hashMethod": "SHA1",
       "uco-types:hashValue": {
         "@type": "xsd:hexBinary",
         "@value": "E65706B487C73E992BAB2A50707A9FD8B0BD6866"
       }
     },
     {
-      "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-9d848705-f476-45b0-b800-37efeeaf10e2",
-      "@type": "uco-observable:FileFacet",
-      "uco-observable:fileName": "build2.art",
-      "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
-      "uco-observable:hash": [
-        {
-          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-40538fc5-49ce-4f46-a44b-99e4a6db5830"
-        },
-        {
-          "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-650758e1-790b-44a5-9a23-44d6087d0b3b"
-        }
-      ],
-      "uco-observable:isDirectory": false,
-      "uco-observable:sizeInBytes": 488
-    },
-    {
-      "@id": "kb:file-0-9165d0d4-e18a-4b3b-9d30-46d4da2c789a",
+      "@id": "kb:file-0918dc9e-9007-4bb9-8edf-f4b0734deca7",
       "@type": [
         "uco-observable:File",
         "uco-core:UcoObject"
       ],
       "uco-core:objectCreatedTime": {
         "@type": "xsd:dateTime",
-        "@value": "2025-01-07T03:34:21.140126Z"
+        "@value": "2025-12-04T04:55:55.762696Z"
       },
       "uco-core:hasFacet": [
         {
-          "@id": "kb:facet-0-588cd1c0e48916d8e7403310402d0a68-9d848705-f476-45b0-b800-37efeeaf10e2"
+          "@id": "kb:facet-content-0-6e0426df819e01c91c7df300cfc9a18d-f4221cf1-e348-42e4-8161-3b2b6ec316a3"
+        },
+        {
+          "@id": "kb:facet-file-0-6e0426df819e01c91c7df300cfc9a18d-f4e13d84-04e1-4a4d-a72c-ea970948539e"
         }
       ]
+    },
+    {
+      "@id": "kb:facet-content-0-6e0426df819e01c91c7df300cfc9a18d-f4221cf1-e348-42e4-8161-3b2b6ec316a3",
+      "@type": "uco-observable:ContentDataFacet",
+      "uco-observable:byteOrder": "Big-endian",
+      "uco-observable:hash": [
+        {
+          "@id": "kb:hash-588cd1c0e48916d8e7403310402d0a68-0c4e9b1a-837c-43dc-9fd3-04f7614bec5f"
+        },
+        {
+          "@id": "kb:hash-e65706b487c73e992bab2a50707a9fd8b0bd6866-6e7b596f-e283-41ec-bb7e-faa1483bf622"
+        }
+      ],
+      "uco-observable:sizeInBytes": 488
+    },
+    {
+      "@id": "kb:facet-file-0-6e0426df819e01c91c7df300cfc9a18d-f4e13d84-04e1-4a4d-a72c-ea970948539e",
+      "@type": "uco-observable:FileFacet",
+      "uco-observable:fileName": "build2.art",
+      "uco-observable:filePath": "Like a Dragon Gaiden- The Man Who Erased His Name/Content/runtime/media/ylad8/data/artisan",
+      "uco-observable:extension": "art",
+      "uco-observable:isDirectory": false,
+      "uco-observable:observableCreatedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-12-04T04:55:55.762Z"
+      },
+      "uco-observable:modifiedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-12-04T04:55:55.762Z"
+      },
+      "uco-observable:accessedTime": {
+        "@type": "xsd:dateTime",
+        "@value": "2025-12-04T04:55:55.762Z"
+      }
     }
   ]
 }

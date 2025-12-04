@@ -111,7 +111,7 @@ pip install case_utils
 - Validation error reporting
 
 ## Validation
-The tool uses CASE Utilities to validate output against UCO 1.3.0:
+The tool uses CASE Utilities to validate output against UCO 1.4.0:
 - Validates JSON-LD structure
 - Checks UCO ontology compliance
 - Verifies relationship integrity
