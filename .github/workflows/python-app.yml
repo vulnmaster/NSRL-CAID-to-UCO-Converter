@@ -59,7 +59,7 @@ jobs:
           cat output/uco-NSRL-CAID-ART.json
 
       - name: Validate UCO output
-        uses: kchason/case-validation-action@v2.9.0
+        uses: kchason/case-validation-action@v2.10.0
         with:
           case-path: ./output/uco-NSRL-CAID-ART.json
           case-version: case-1.4.0
