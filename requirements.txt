@@ -1,6 +1,6 @@
 # Development dependencies
 black==26.1.0
-mypy==1.19.0
+mypy==1.19.1
 case-utils>=0.17.0
 pyshacl>=0.30.1
 rdflib>=7.5.0
