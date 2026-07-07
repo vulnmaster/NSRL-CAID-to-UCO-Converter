@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Updated development and validation dependencies: `black` 26.5.1, `mypy` 2.1.0, `pyshacl` >=0.31.0, and `rdflib` >=7.6.0.
+- Updated GitHub Actions checkout action to `actions/checkout@v7`.
+
 ## [1.1.0] - 2025-12-04
 
 ### Added
