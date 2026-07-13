@@ -2,5 +2,5 @@
 black==26.5.1
 mypy==2.1.0
 case-utils>=0.17.0
-pyshacl>=0.31.0
+pyshacl>=0.40.0
 rdflib>=7.6.0
