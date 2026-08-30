@@ -9,8 +9,8 @@ with appropriate facets and relationships.
 Copyright: Linux Foundation Cyber Domain Ontology Project
 License: Apache 2.0
 Author: Cyber Domain Ontology Developers: @vulnmaster
-Version: 1.1.0
-UCO Version: 1.4.0
+Version: 1.2.0
+UCO Version: 1.5.0
 Ontology Compliance: UCO Core, Observable, and Types
 """
 
@@ -45,6 +45,12 @@ import uuid
 import subprocess
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set, TypedDict
+
+TOOL_VERSION = "1.2.0"
+UCO_VERSION = "1.5.0"
+UCO_ONTOLOGY_PATH = (
+    Path(__file__).resolve().parent / "ontology" / f"uco-{UCO_VERSION}.ttl"
+)
 
 
 # Type definitions for improved clarity
@@ -162,7 +168,8 @@ class NSRLConverter:
                 "uco-core:objectCreatedTime": current_time,
                 "uco-core:startTime": current_time,
                 "uco-core:endTime": current_time,
-                "uco-core:specVersion": "1.4.0",
+                "uco-core:specVersion": UCO_VERSION,
+                "uco-tool:version": TOOL_VERSION,
             },
             "organization": {
                 "@id": "kb:org-nist",
@@ -191,6 +198,7 @@ class NSRLConverter:
             "@id": bundle_id,
             "@type": "uco-core:Bundle",
             "uco-core:description": "NSRL CAID media file reference data",
+            "uco-core:specVersion": UCO_VERSION,
             "uco-core:object": [
                 constant_objects["tool"],
                 constant_objects["organization"],
@@ -212,7 +220,7 @@ class NSRLConverter:
                         "@type": "xsd:dateTime",
                         "@value": current_time,
                     },
-                    "uco-core:specVersion": "1.4.0",
+                    "uco-core:specVersion": UCO_VERSION,
                 },
                 {
                     "@id": f"kb:relationship-{uuid.uuid4()}",
@@ -225,7 +233,7 @@ class NSRLConverter:
                         "@type": "xsd:dateTime",
                         "@value": current_time,
                     },
-                    "uco-core:specVersion": "1.4.0",
+                    "uco-core:specVersion": UCO_VERSION,
                 },
             ]
         )
@@ -246,6 +254,7 @@ class NSRLConverter:
                 "@value": current_time,
             },
             "uco-core:description": f"Python {sys.version}",
+            "uco-core:specVersion": UCO_VERSION,
         }
 
     def _create_hash_object(self, hash_value: str, hash_method: str) -> Dict[str, Any]:
@@ -354,24 +363,31 @@ class NSRLConverter:
         return f"kb:{prefix}-{id_str}-{uuid_str}"
 
     def validate_file(self, file_path: Path) -> None:
-        """Validate output file using case_validate."""
-        try:
-            cmd = ["case_validate", "--built-version", "case-1.4.0", str(file_path)]
-            if self.logger.level == logging.DEBUG:
-                cmd.append("--debug")
+        """Validate output against the bundled UCO 1.5.0 ontology and shapes."""
+        if not UCO_ONTOLOGY_PATH.is_file():
+            raise FileNotFoundError(f"UCO ontology not found: {UCO_ONTOLOGY_PATH}")
 
-            self.logger.info(f"Validating {file_path}...")
-            # Use shell=False for security, but make sure case_validate is in path
-            result = subprocess.run(cmd, capture_output=True, text=True)
+        cmd = [
+            "case_validate",
+            "--built-version",
+            "none",
+            "--ontology-graph",
+            str(UCO_ONTOLOGY_PATH),
+        ]
+        if self.logger.level == logging.DEBUG:
+            cmd.append("--debug")
+        cmd.append(str(file_path))
 
-            if result.returncode == 0:
-                self.logger.info("Validation successful")
-            else:
-                self.logger.error("Validation failed")
-                self.logger.error(result.stderr)
-                self.logger.error(result.stdout)
-        except Exception as e:
-            self.logger.error(f"Validation error: {e}")
+        self.logger.info("Validating %s against UCO %s...", file_path, UCO_VERSION)
+        result = subprocess.run(cmd, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            diagnostics = "\n".join(
+                output.strip() for output in (result.stdout, result.stderr) if output
+            )
+            raise RuntimeError(f"UCO validation failed:\n{diagnostics}")
+
+        self.logger.info(result.stdout.strip() or "Validation successful")
 
     def process_file(self, input_file: Path) -> Optional[Dict[str, Any]]:
         """Process single NSRL CAID JSON file to UCO format."""
@@ -406,6 +422,7 @@ class NSRLConverter:
                     "@type": "xsd:dateTime",
                     "@value": current_time,
                 },
+                "uco-core:specVersion": UCO_VERSION,
                 "uco-core:object": [],  # Will be populated later
             }
             add_object(bundle)
@@ -417,6 +434,8 @@ class NSRLConverter:
                 "@type": ["uco-tool:ConfiguredTool", "uco-core:UcoObject"],
                 "uco-core:name": "nsrl_to_uco.py",
                 "uco-core:description": "Tool to convert NSRL CAID JSON to UCO format",
+                "uco-core:specVersion": UCO_VERSION,
+                "uco-tool:version": TOOL_VERSION,
                 "uco-core:objectCreatedTime": {
                     "@type": "xsd:dateTime",
                     "@value": current_time,
@@ -431,6 +450,7 @@ class NSRLConverter:
                 "@type": ["uco-identity:Organization", "uco-core:UcoObject"],
                 "uco-core:name": "National Institute of Standards and Technology",
                 "uco-core:description": "NIST maintains the NSRL CAID repository",
+                "uco-core:specVersion": UCO_VERSION,
                 "uco-core:objectCreatedTime": {
                     "@type": "xsd:dateTime",
                     "@value": current_time,
@@ -445,6 +465,7 @@ class NSRLConverter:
                 "@type": ["uco-observable:URL", "uco-core:UcoObject"],
                 "uco-core:name": "NSRL CAID Repository",
                 "uco-core:description": "National Software Reference Library - Comprehensive Application Identifier",
+                "uco-core:specVersion": UCO_VERSION,
                 "uco-core:objectCreatedTime": {
                     "@type": "xsd:dateTime",
                     "@value": current_time,
@@ -460,6 +481,7 @@ class NSRLConverter:
                 "@type": ["uco-observable:ObservableObject", "uco-core:UcoObject"],
                 "uco-core:name": "Python Environment",
                 "uco-core:description": f"Python {sys.version}",
+                "uco-core:specVersion": UCO_VERSION,
                 "uco-core:objectCreatedTime": {
                     "@type": "xsd:dateTime",
                     "@value": current_time,
@@ -485,6 +507,7 @@ class NSRLConverter:
                     file_obj: Dict[str, Any] = {
                         "@id": file_id,
                         "@type": ["uco-observable:File", "uco-core:UcoObject"],
+                        "uco-core:specVersion": UCO_VERSION,
                         "uco-core:objectCreatedTime": {
                             "@type": "xsd:dateTime",
                             "@value": current_time,
@@ -595,6 +618,9 @@ class NSRLConverter:
                         combined_results.extend(result["@graph"])
                 else:
                     error_count += 1
+        else:
+            self.logger.error("Input path does not exist: %s", input_path)
+            error_count += 1
 
         # If combine flag is set, create additional combined file
         if self.combine and combined_results:
@@ -607,6 +633,10 @@ class NSRLConverter:
         self.logger.info(
             f"Processing complete. Processed: {processed_count}, Errors: {error_count}"
         )
+        if error_count:
+            raise RuntimeError(
+                f"Failed to process or validate {error_count} input file(s)"
+            )
 
 
 def main() -> None:

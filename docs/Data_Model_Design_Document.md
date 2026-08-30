@@ -150,7 +150,7 @@
 ### Output Validation
 1. Schema Compliance
    - Valid JSON-LD
-146|   - UCO ontology compliance (CASE 1.4.0)
+   - UCO ontology compliance (UCO 1.5.0)
    - Required properties present
 
 2. Relationship Integrity
@@ -244,7 +244,7 @@
           "uco-core:kindOfRelationship": "createdBy",
           "uco-core:isDirectional": true,
           "uco-core:objectCreatedTime": "2024-01-05T08:00:00Z",
-          "uco-core:specVersion": "1.3.0"
+          "uco-core:specVersion": "1.5.0"
         }
       ]
     }

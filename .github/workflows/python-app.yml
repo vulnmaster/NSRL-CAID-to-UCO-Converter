@@ -48,21 +48,12 @@ jobs:
           echo "Looking for json module:"
           python3 -c "import importlib.util; print('json module location:', importlib.util.find_spec('json'))"
       
-      - name: Run conversion
+      - name: Run conversion and UCO 1.5.0 validation
         run: |
-          python3 nsrl_to_uco.py data/NSRL-CAID-ART.json
+          python3 nsrl_to_uco.py data/NSRL-CAID-ART.json --validate
       
       - name: List output directory
         run: |
           ls -la output/
           echo "Output file contents:"
           cat output/uco-NSRL-CAID-ART.json
-
-      - name: Validate UCO output
-        uses: kchason/case-validation-action@v2.10.0
-        with:
-          case-path: ./output/uco-NSRL-CAID-ART.json
-          case-version: case-1.4.0
-          extension-filter: json
-          abort: false
-          report-in-pr: false 

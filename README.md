@@ -77,7 +77,7 @@ Each input file produces a corresponding UCO JSON-LD file containing:
 - Bundle with tool, organization, and source objects
 - File objects with appropriate facets
 - Provenance relationships with timestamps
-- Compliant with UCO 1.3.0 specification
+- Compliant with UCO 1.5.0 specification
 
 ### Combined Output
 When using --combine, an additional uco-combined.json is created containing:
@@ -99,7 +99,7 @@ source venv/bin/activate  # Linux/Mac
 .\venv\Scripts\Activate.ps1  # Windows
 
 # Install dependencies
-pip install case_utils
+pip install -r requirements.txt
 ```
 
 ## Error Handling
@@ -111,7 +111,7 @@ pip install case_utils
 - Validation error reporting
 
 ## Validation
-The tool uses CASE Utilities to validate output against UCO 1.4.0:
+The tool uses CASE Utilities and the bundled UCO 1.5.0 ontology graph to validate output:
 - Validates JSON-LD structure
 - Checks UCO ontology compliance
 - Verifies relationship integrity
@@ -120,4 +120,3 @@ The tool uses CASE Utilities to validate output against UCO 1.4.0:
 
 ## Documentation
 For details on how NSRL CAID fields map to UCO, see [Data Model Design Document](docs/Data_Model_Design_Document.md)
-

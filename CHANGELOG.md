@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-30
+
+### Added
+- Bundled the UCO 1.5.0 ontology and SHACL shapes for reproducible local and CI validation.
+
 ### Changed
-- Updated development and validation dependencies: `black` 26.5.1, `mypy` 2.1.0, `pyshacl` >=0.31.0, and `rdflib` >=7.6.0.
-- Updated GitHub Actions checkout action to `actions/checkout@v7`.
+- Updated the converter, generated provenance metadata, validation, and documentation for UCO 1.5.0.
+- Updated development and validation dependencies: `black` 26.5.1, `mypy` 2.3.1, `pyshacl` >=0.40.1, and `rdflib` >=7.6.0.
+- Updated GitHub Actions to `actions/checkout@v7` and `actions/setup-python@v7`.
 
 ## [1.1.0] - 2025-12-04
 
@@ -33,4 +39,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for converting NSRL CAID ODATA JSON to UCO 1.3.0 JSON-LD.
 - Support for MD5 and SHA1 hash mapping.
 - Batch processing and combined graph output capabilities.
-
